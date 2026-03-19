@@ -118,19 +118,7 @@ pip install -r requirements.txt
 
 ## Environment Variables (.env)
 
-Create a `.env` file in the root directory:
 
-```env
-FLASK_APP=run.py
-FLASK_ENV=development
-SECRET_KEY=your-secret-key
-
-DATABASE_URL=sqlite:///soko.db
-
-BABEL_DEFAULT_LOCALE=sw
-```
-
----
 
 ## Database Setup
 
