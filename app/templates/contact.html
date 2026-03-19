@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Wasiliana Nasi - Soko Safi{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="display-4 fw-bold mb-4">Wasiliana <span class="text-accent">Nasi</span></h1>
+            <p class="lead mb-5">Una swali, maoni au unahitaji msaada? Tafadhali jaza fomu hapa chini au tumia njia zingine za mawasiliano.</p>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card border-0 bg-primary-card text-center p-4">
+                        <i class="fas fa-map-marker-alt fa-3x text-accent mb-3"></i>
+                        <h5>Anwani</h5>
+                        <p class="text-muted small">Dar es Salaam, Tanzania</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 bg-primary-card text-center p-4">
+                        <i class="fas fa-phone-alt fa-3x text-accent mb-3"></i>
+                        <h5>Simu</h5>
+                        <p class="text-muted small">+255 123 456 789</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 bg-primary-card text-center p-4">
+                        <i class="fas fa-envelope fa-3x text-accent mb-3"></i>
+                        <h5>Barua pepe</h5>
+                        <p class="text-muted small">info@sokosafi.co.tz</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 bg-primary-card shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Tuma ujumbe</h5>
+                    <form method="POST" action="{{ url_for('main.contact') }}">
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Jina lako</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Barua pepe</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Ujumbe</label>
+                            <textarea class="form-control" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Tuma Ujumbe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

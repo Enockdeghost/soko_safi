@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Matangazo ya Mauzo{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-tags text-accent me-2"></i>Unda Tangazo Jipya</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Bidhaa (acha wazi kwa duka zima)</label>
+                        <select name="product_id" class="form-select">
+                            <option value="">-- Duka zima --</option>
+                            {% for p in products %}
+                            <option value="{{ p.id }}">{{ p.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Punguzo la asilimia</label>
+                        <input type="number" name="discount" class="form-control" min="1" max="100" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-muted">Anza tarehe</label>
+                            <input type="date" name="start_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-muted">Maliza tarehe</label>
+                            <input type="date" name="end_date" class="form-control" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Unda Tangazo</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-list text-accent me-2"></i>Matangazo Yaliyopo</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Bidhaa</th>
+                            <th>Punguzo</th>
+                            <th>Muda</th>
+                            <th>Hali</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for promo in promos %}
+                        <tr>
+                            <td>{{ promo.product.name if promo.product else 'Duka zima' }}</td>
+                            <td>{{ promo.discount_percent }}%</td>
+                            <td>{{ promo.start_date.strftime('%d/%m') }} - {{ promo.end_date.strftime('%d/%m') }}</td>
+                            <td>
+                                {% if promo.is_active and promo.end_date > now() %}
+                                <span class="badge bg-success">Inatumika</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Imeisha</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

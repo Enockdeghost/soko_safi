@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Malipo{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-credit-card text-accent me-2"></i>Malipo</h2>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body">
+                <form method="POST">
+                    <h5>Anwani ya Uwasilishaji</h5>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Anwani kamili</label>
+                        <textarea name="address" class="form-control" rows="2" required>{{ current_user.buyer_profile.default_address or '' }}</textarea>
+                    </div>
+                    <h5 class="mt-4">Njia ya Malipo</h5>
+                    <div class="mb-3">
+                        <select name="payment_method" class="form-select" required>
+                            <option value="mpesa">M-Pesa</option>
+                            <option value="tigo">TigoPesa</option>
+                            <option value="airtel">Airtel Money</option>
+                            <option value="cash">Cash (kwa muuzaji)</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Utapokea SMS yenye maelekezo ya malipo baada ya kuweka agizo.
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Weka Agizo</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body">
+                <h5>Muhtasari wa Agizo</h5>
+                {% for item in cart_items %}
+                <div class="d-flex justify-content-between small mb-2">
+                    <span>{{ item.product.name }} x{{ item.quantity }}</span>
+                    <span>TZS {{ "{:,.0f}".format(item.product.price * item.quantity) }}</span>
+                </div>
+                {% endfor %}
+                <hr class="border-secondary">
+                <div class="d-flex justify-content-between fw-bold">
+                    <span>Jumla</span>
+                    <span>TZS {{ "{:,.0f}".format(total) }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

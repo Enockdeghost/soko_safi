@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+{% block title %}Nyumbani - Soko Safi{% endblock %}
+
+{% block content %}
+<!-- Hero Section with modern split layout -->
+<section class="position-relative overflow-hidden" style="background: linear-gradient(145deg, var(--primary-darker) 0%, var(--primary-dark) 100%);">
+    <div class="container-fluid px-4 px-lg-5 py-5 py-lg-0" style="min-height: 90vh;">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6 text-white py-5">
+                <h1 class="display-3 fw-bold mb-4" style="line-height: 1.2;">
+                    Soko Safi: <span class="text-accent">Biashara Yako</span><br>Katika Mkono Wako
+                </h1>
+                <p class="lead mb-5" style="color: var(--text-muted); max-width: 90%;">
+                    Jukwaa la kidijitali linalowawezesha wafanyabiashara wadogo, wanunuzi na wasambazaji kushirikiana kwa urahisi – hata bila mtandao.
+                </p>
+                <div class="d-flex flex-wrap gap-3 mb-5">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg px-5 py-3 rounded-pill">
+                        <i class="fas fa-rocket me-2"></i>Anza Sasa Bure
+                    </a>
+                    <a href="{{ url_for('main.about') }}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">
+                        <i class="fas fa-play-circle me-2"></i>Tazama Video
+                    </a>
+                </div>
+                <div class="row g-4">
+                    <div class="col-4">
+                        <h3 class="fw-bold text-accent display-6">1k+</h3>
+                        <p class="small text-muted">Wafanyabiashara</p>
+                    </div>
+                    <div class="col-4">
+                        <h3 class="fw-bold text-accent display-6">500+</h3>
+                        <p class="small text-muted">Wasambazaji</p>
+                    </div>
+                    <div class="col-4">
+                        <h3 class="fw-bold text-accent display-6">10k+</h3>
+                        <p class="small text-muted">Mauzo kwa mwezi</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block text-center">
+                <div class="position-relative">
+                    <i class="fas fa-mobile-alt fa-12x text-accent opacity-25"></i>
+                    <i class="fas fa-store fa-5x position-absolute top-50 start-50 translate-middle text-accent" style="transform: translate(-50%, -50%) !important;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Custom bottom wave -->
+    <svg class="position-absolute bottom-0 start-0 w-100" viewBox="0 0 1440 100" preserveAspectRatio="none">
+        <path fill="var(--bg-primary)" d="M0,100 L1440,100 L1440,0 C1200,50 800,80 0,20 Z"></path>
+    </svg>
+</section>
+
+<!-- Trusted Partners -->
+<section class="py-4 bg-primary-darker">
+    <div class="container-fluid px-4 px-lg-5">
+        <p class="text-center text-muted mb-4 fw-semibold">Wanaotumainika na wafanyabiashara wengi Tanzania</p>
+        <div class="d-flex flex-wrap justify-content-center gap-4 gap-md-5">
+            <span class="text-accent fw-bold fs-4"><i class="fas fa-mobile-alt me-2"></i>M‑Pesa</span>
+            <span class="text-accent fw-bold fs-4"><i class="fas fa-mobile-alt me-2"></i>TigoPesa</span>
+            <span class="text-accent fw-bold fs-4"><i class="fas fa-mobile-alt me-2"></i>Airtel Money</span>
+            <span class="text-accent fw-bold fs-4"><i class="fas fa-store me-2"></i>Duka</span>
+            <span class="text-accent fw-bold fs-4"><i class="fas fa-leaf me-2"></i>Soko</span>
+        </div>
+    </div>
+</section>
+
+<!-- Three Pillars -->
+<section class="py-5">
+    <div class="container-fluid px-4 px-lg-5">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Kwa nini <span class="text-accent">Soko Safi</span>?</h2>
+            <p class="lead text-muted">Tunawezesha biashara ndogondogo kwa teknolojia rahisi na ya kuaminika</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-primary-card p-4 text-center transition rounded-4 shadow-sm hover-shadow-lg">
+                    <div class="mb-3">
+                        <i class="fas fa-chart-line fa-3x text-accent"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Ongeza Mauzo Yako</h4>
+                    <p class="text-muted">Fikia wateja wapya na ufuatilie mauzo yako kwa wakati halisi, uweze kufanya maamuzi sahihi.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-primary-card p-4 text-center transition rounded-4 shadow-sm hover-shadow-lg">
+                    <div class="mb-3">
+                        <i class="fas fa-boxes fa-3x text-accent"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Dhibiti Hisa Zako</h4>
+                    <p class="text-muted">Pokea arifa wakati bidhaa zinakaribia kuisha na upange upya kwa urahisi kupitia wasambazaji walio karibu.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-primary-card p-4 text-center transition rounded-4 shadow-sm hover-shadow-lg">
+                    <div class="mb-3">
+                        <i class="fas fa-handshake fa-3x text-accent"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Unganisha na Wasambazaji</h4>
+                    <p class="text-muted">Tuma maagizo moja kwa moja kwa wasambazaji na upate bidhaa kwa bei nafuu na haraka.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works (Step by Step) -->
+<section class="py-5 bg-primary-darker">
+    <div class="container-fluid px-4 px-lg-5">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Jinsi <span class="text-accent">Inavyofanya Kazi</span></h2>
+            <p class="lead text-muted">Anza kwa hatua nne rahisi</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-sm-6 col-lg-3">
+                <div class="card h-100 border-0 bg-primary-card text-center p-4 transition rounded-4 shadow-sm hover-shadow-lg">
+                    <div class="rounded-circle bg-accent bg-opacity-10 text-accent d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 90px; height: 90px;">
+                        <span class="fs-1 fw-bold">1</span>
+                    </div>
+                    <h5 class="fw-bold mb-3">Jisajili</h5>
+                    <p class="text-muted small">Unda akaunti kwa namba yako ya simu – dakika moja tu.</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card h-100 border-0 bg-primary-card text-center p-4 transition rounded-4 shadow-sm hover-shadow-lg">
+                    <div class="rounded-circle bg-accent bg-opacity-10 text-accent d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 90px; height: 90px;">
+                        <span class="fs-1 fw-bold">2</span>
+                    </div>
+                    <h5 class="fw-bold mb-3">Anzisha Wasifu</h5>
+                    <p class="text-muted small">Weka taarifa za biashara yako (duka, bidhaa, anwani).</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card h-100 border-0 bg-primary-card text-center p-4 transition rounded-4 shadow-sm hover-shadow-lg">
+                    <div class="rounded-circle bg-accent bg-opacity-10 text-accent d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 90px; height: 90px;">
+                        <span class="fs-1 fw-bold">3</span>
+                    </div>
+                    <h5 class="fw-bold mb-3">Anza Kuuza/Kununua</h5>
+                    <p class="text-muted small">Rekodi mauzo au weka bidhaa kwenye rukwama, fanya malipo kwa simu.</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card h-100 border-0 bg-primary-card text-center p-4 transition rounded-4 shadow-sm hover-shadow-lg">
+                    <div class="rounded-circle bg-accent bg-opacity-10 text-accent d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 90px; height: 90px;">
+                        <span class="fs-1 fw-bold">4</span>
+                    </div>
+                    <h5 class="fw-bold mb-3">Kua na Ukuaji</h5>
+                    <p class="text-muted small">Pata ripoti, uchambuzi na maoni ya wateja ili kuendeleza biashara yako.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container-fluid px-4 px-lg-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <h2 class="display-5 fw-bold mb-4">Vipengele <span class="text-accent">Vinavyokusaidia</span></h2>
+                <p class="lead text-muted mb-4">Zana za kisasa zilizoundwa kukurahisishia biashara yako</p>
+                <ul class="list-unstyled">
+                    <li class="mb-3"><i class="fas fa-check-circle text-accent me-3 fs-5"></i> Fuatilia mauzo na gharama kwa urahisi</li>
+                    <li class="mb-3"><i class="fas fa-check-circle text-accent me-3 fs-5"></i> Dhibiti hisa na upokee arifa za kuisha</li>
+                    <li class="mb-3"><i class="fas fa-check-circle text-accent me-3 fs-5"></i> Unganisha na wasambazaji moja kwa moja</li>
+                    <li class="mb-3"><i class="fas fa-check-circle text-accent me-3 fs-5"></i> Lipa na upokee malipo kwa simu ya mkononi</li>
+                    <li class="mb-3"><i class="fas fa-check-circle text-accent me-3 fs-5"></i> Fanya kazi offline na usawazishe baadaye</li>
+                    <li class="mb-3"><i class="fas fa-check-circle text-accent me-3 fs-5"></i> Mfumo wa vocha na misaada kwa uwazi</li>
+                </ul>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-success btn-lg px-5 mt-3 rounded-pill">Jisajili Bure</a>
+            </div>
+            <div class="col-lg-6">
+                <div class="bg-primary-card p-5 rounded-5 shadow-lg">
+                    <i class="fas fa-chart-pie fa-5x text-accent mb-4"></i>
+                    <h4 class="fw-bold mb-3">Ripoti za Biashara Yako</h4>
+                    <p class="text-muted">Pata muhtasari wa mauzo, gharama na faida kwa wakati halisi. Uweze kuona ni bidhaa zipi zinauza zaidi na kufanya maamuzi sahihi.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5 bg-primary-darker">
+    <div class="container-fluid px-4 px-lg-5">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Wanachosema <span class="text-accent">Wateja Wetu</span></h2>
+            <p class="lead text-muted">Wafanyabiashara kama wewe wanaamini Soko Safi</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 bg-primary-card p-4 transition rounded-4 shadow-sm hover-shadow-lg">
+                    <i class="fas fa-quote-right fa-2x text-accent mb-3"></i>
+                    <p class="text-muted small mb-4">"Soko Safi imenisaidia kuweka rekodi za mauzo yangu kwa urahisi. Sasa najua faida yangu kila siku."</p>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-user-circle fa-3x text-accent me-3"></i>
+                        <div>
+                            <h6 class="fw-bold mb-0">Mama Ntilie</h6>
+                            <small class="text-muted">Muuzaji, Dar es Salaam</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 bg-primary-card p-4 transition rounded-4 shadow-sm hover-shadow-lg">
+                    <i class="fas fa-quote-right fa-2x text-accent mb-3"></i>
+                    <p class="text-muted small mb-4">"Nimeweza kuwasiliana na wasambazaji wapya na kupata bidhaa kwa bei nafuu. Asante Soko Safi!"</p>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-user-circle fa-3x text-accent me-3"></i>
+                        <div>
+                            <h6 class="fw-bold mb-0">Juma M.</h6>
+                            <small class="text-muted">Mmiliki wa Duka, Mwanza</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 bg-primary-card p-4 transition rounded-4 shadow-sm hover-shadow-lg">
+                    <i class="fas fa-quote-right fa-2x text-accent mb-3"></i>
+                    <p class="text-muted small mb-4">"Hata nikikosa mtandao, naweza kuendelea kuuza. Data zinasawazishwa mtandao ukirudi. Inaokoa muda!"</p>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-user-circle fa-3x text-accent me-3"></i>
+                        <div>
+                            <h6 class="fw-bold mb-0">Asha K.</h6>
+                            <small class="text-muted">Muuzaji wa Samaki, Zanzibar</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5">
+    <div class="container-fluid px-4 px-lg-5">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Maswali <span class="text-accent">Yanayoulizwa Mara kwa Mara</span></h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item bg-primary-card border-0 mb-3 rounded-4 overflow-hidden">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button bg-transparent text-light fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                Je, Soko Safi ni bure?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                Ndiyo! Kujiandikisha na kutumia vipengele vya msingi ni bure kabisa.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-primary-card border-0 mb-3 rounded-4 overflow-hidden">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button bg-transparent text-light collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                Nahitaji mtandao?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                Unaweza kutumia Soko Safi hata ukiwa offline! Data itasawazishwa mtandao ukirudi.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-primary-card border-0 mb-3 rounded-4 overflow-hidden">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button bg-transparent text-light collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Ninawezaje kulipwa?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted">
+                                Malipo yanaweza kufanywa kwa M‑Pesa, TigoPesa, Airtel Money au cash.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final Call to Action -->
+<section class="py-5 bg-accent text-white text-center">
+    <div class="container-fluid px-4 px-lg-5">
+        <h2 class="display-5 fw-bold mb-4">Jiunge na Mapinduzi ya Biashara Ndogo Leo</h2>
+        <p class="lead mb-5">Zaidi ya wafanyabiashara 1,000 tayari wanaamini Soko Safi.</p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold rounded-pill" style="color: var(--accent);">
+            <i class="fas fa-rocket me-2"></i>Jisajili Bure Sasa
+        </a>
+    </div>
+</section>
+
+<style>
+    .transition {
+        transition: all 0.3s ease;
+    }
+    .hover-shadow-lg:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.3) !important;
+    }
+    .fa-12x {
+        font-size: 12rem;
+    }
+</style>
+{% endblock %}

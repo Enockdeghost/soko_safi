@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Hariri Duka{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Hariri Taarifa za Duka</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Jina la Duka</label>
+                        <input type="text" name="name" class="form-control" value="{{ shop.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mahali</label>
+                        <input type="text" name="location" class="form-control" value="{{ shop.location }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Aina ya Biashara</label>
+                        <select name="category" class="form-select">
+                            <option value="duka" {% if shop.category=='duka' %}selected{% endif %}>Duka la rejareja</option>
+                            <option value="kiosk" {% if shop.category=='kiosk' %}selected{% endif %}>Kioski</option>
+                            <option value="stall" {% if shop.category=='stall' %}selected{% endif %}>Soko</option>
+                            <option value="other" {% if shop.category=='other' %}selected{% endif %}>Nyingine</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Hifadhi</button>
+                    <a href="{{ url_for('vendor.dashboard') }}" class="btn btn-secondary w-100 mt-2">Ghairi</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

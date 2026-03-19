@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Dashibodi ya Admin{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h6>Wafanyabiashara</h6>
+                <h3>{{ total_vendors }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-secondary">
+            <div class="card-body">
+                <h6>Wasambazaji</h6>
+                <h3>{{ total_suppliers }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h6>Maduka Yasiyothibitishwa</h6>
+                <h3>{{ pending_shops }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h6>Vocha Zinazotumika</h6>
+                <h3>{{ active_vouchers }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- recent logs etc. -->
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{% if product %}Hariri{% else %}Ongeza{% endif %} Bidhaa{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h4 class="fw-semibold"><i class="fas fa-{% if product %}edit{% else %}plus{% endif %} text-accent me-2"></i>{% if product %}Hariri{% else %}Ongeza{% endif %} Bidhaa</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.name.label(class="form-label small text-muted") }}
+                            {{ form.name(class="form-control") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.price.label(class="form-label small text-muted") }}
+                            {{ form.price(class="form-control", step="100") }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.quantity.label(class="form-label small text-muted") }}
+                            {{ form.quantity(class="form-control", step="0.01") }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.unit.label(class="form-label small text-muted") }}
+                            {{ form.unit(class="form-select") }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.expiry_date.label(class="form-label small text-muted") }}
+                            {{ form.expiry_date(class="form-control", type="date") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.low_stock_threshold.label(class="form-label small text-muted") }}
+                            {{ form.low_stock_threshold(class="form-control", step="0.01") }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-save me-2"></i>Hifadhi</button>
+                    <a href="{{ url_for('vendor.inventory') }}" class="btn btn-outline-light">Ghairi</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

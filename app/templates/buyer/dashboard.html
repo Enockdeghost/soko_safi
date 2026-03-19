@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Dashibodi ya Mnunuzi{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-user-circle fa-3x text-accent mb-3"></i>
+                <h5>{{ current_user.full_name or current_user.phone }}</h5>
+                <p class="text-muted">Pointi zako: <span class="badge bg-success">{{ points }}</span></p>
+                <a href="{{ url_for('buyer.profile') }}" class="btn btn-sm btn-outline-success">Hariri Wasifu</a>
+            </div>
+        </div>
+        <div class="card border-0 bg-primary-card shadow-sm mt-3">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h6 class="fw-semibold"><i class="fas fa-heart text-accent me-2"></i>Wishlist</h6>
+            </div>
+            <div class="card-body">
+                {% if wishlist %}
+                <ul class="list-group list-group-flush bg-transparent">
+                    {% for item in wishlist %}
+                    <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('buyer.product_detail', id=item.product.id) }}" class="text-decoration-none">{{ item.product.name }}</a>
+                        <span class="badge bg-success">TZS {{ item.product.price }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted small">Hakuna bidhaa kwenye wishlist.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-history text-accent me-2"></i>Maagizo Yako ya Hivi Karibuni</h5>
+            </div>
+            <div class="card-body">
+                {% if orders %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Namba</th>
+                                <th>Tarehe</th>
+                                <th>Jumla</th>
+                                <th>Hali</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>#{{ order.order_number }}</td>
+                                <td>{{ order.created_at.strftime('%d/%m/%Y') }}</td>
+                                <td>TZS {{ "{:,.0f}".format(order.total_amount) }}</td>
+                                <td><span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}warning{% endif %}">{{ order.status }}</span></td>
+                                <td><a href="{{ url_for('buyer.order_detail', id=order.id) }}" class="btn btn-sm btn-outline-success">Angalia</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ url_for('buyer.orders') }}" class="btn btn-sm btn-outline-success mt-2">Angalia zote</a>
+                {% else %}
+                <p class="text-muted">Hujafanya maagizo bado. <a href="{{ url_for('buyer.catalog') }}" class="text-accent">Vinjali bidhaa</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{# reports.html #}
+{% extends "base.html" %}
+{% block title %}Ripoti{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h4 class="fw-semibold"><i class="fas fa-chart-bar text-accent me-2"></i>Chagua Kipindi</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.start_date.label(class="form-label small text-muted") }}
+                        {{ form.start_date(class="form-control", type="date") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.end_date.label(class="form-label small text-muted") }}
+                        {{ form.end_date(class="form-control", type="date") }}
+                    </div>
+                    <button type="submit" class="btn btn-success w-100"><i class="fas fa-search me-2"></i>Tazama Ripoti</button>
+                </form>
+                <hr class="border-secondary">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('vendor.export_pdf') }}" class="btn btn-outline-success">Pakua PDF (siku 30 za mwisho)</a>
+                    <a href="{{ url_for('vendor.export_csv') }}" class="btn btn-outline-success">Pakua CSV</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{# report_results.html #}
+{% extends "base.html" %}
+{% block title %}Matokeo ya Ripoti{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-chart-bar text-accent me-2"></i>Ripoti ya {{ start.strftime('%d/%m/%Y') }} - {{ end.strftime('%d/%m/%Y') }}</h2>
+    <a href="{{ url_for('vendor.reports') }}" class="btn btn-outline-success">Rudi</a>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Jumla ya Mauzo</h6>
+                <h3 class="text-success">TZS {{ "{:,.0f}".format(total_sales) }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Jumla ya Gharama</h6>
+                <h3 class="text-danger">TZS {{ "{:,.0f}".format(total_expenses) }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Faida</h6>
+                <h3 class="text-accent">TZS {{ "{:,.0f}".format(profit) }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-list text-accent me-2"></i>Mauzo ya Kila Siku</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr><th>Tarehe</th><th>Jumla (TZS)</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for sale in sales %}
+                        <tr>
+                            <td>{{ sale.timestamp.strftime('%d/%m/%Y') }}</td>
+                            <td>{{ "{:,.0f}".format(sale.total_price) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-list text-accent me-2"></i>Gharama kwa Aina</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr><th>Aina</th><th>Kiasi (TZS)</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for exp in expenses %}
+                        <tr>
+                            <td>{{ exp.category.name }}</td>
+                            <td>{{ "{:,.0f}".format(exp.amount) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

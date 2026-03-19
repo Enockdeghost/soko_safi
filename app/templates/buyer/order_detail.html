@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Agizo #{{ order.order_number }}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-receipt text-accent me-2"></i>Agizo #{{ order.order_number }}</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Tarehe:</strong> {{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                <p><strong>Muuzaji:</strong> {{ order.vendor.shop.name }}</p>
+                <p><strong>Anwani ya uwasilishaji:</strong> {{ order.delivery_address }}</p>
+                <p><strong>Hali:</strong> <span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}warning{% endif %}">{{ order.status }}</span></p>
+                <p><strong>Malipo:</strong> <span class="badge bg-{% if order.payment_status == 'paid' %}success{% else %}secondary{% endif %}">{{ order.payment_status }}</span></p>
+                <hr class="border-secondary">
+                <h6>Bidhaa zilizoagizwa</h6>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Bidhaa</th>
+                            <th>Idadi</th>
+                            <th>Bei</th>
+                            <th>Jumla</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.quantity }} {{ item.product.unit }}</td>
+                            <td>TZS {{ "{:,.0f}".format(item.price_at_time) }}</td>
+                            <td>TZS {{ "{:,.0f}".format(item.subtotal) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Jumla</th>
+                            <th>TZS {{ "{:,.0f}".format(order.total_amount) }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                {% if order.status == 'delivered' %}
+                    {% set review = order.review.first() %}
+                    {% if not review %}
+                    <a href="{{ url_for('buyer.review_order', id=order.id) }}" class="btn btn-outline-success">Toa maoni</a>
+                    {% else %}
+                    <p class="text-muted">Umeshatoa maoni: ⭐{{ review.rating }} "{{ review.comment }}"</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-truck fa-3x text-accent mb-3"></i>
+                <h6>Uwasilishaji</h6>
+                <p class="small text-muted">Wasiliana na muuzaji kwa maelezo zaidi.</p>
+                <a href="https://wa.me/{{ order.vendor.phone }}" class="btn btn-success btn-sm w-100" target="_blank"><i class="fab fa-whatsapp me-2"></i>Wasiliana kwa WhatsApp</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

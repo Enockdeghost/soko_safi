@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Maagizo{% endblock %}
+{% block content %}
+<h2>Maagizo Yote</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Muuzaji</th>
+            <th>Bidhaa</th>
+            <th>Idadi</th>
+            <th>Hali</th>
+            <th>Tarehe</th>
+            <th>Hatua</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.vendor.full_name }}</td>
+            <td>{{ order.product_name }}</td>
+            <td>{{ order.quantity }} {{ order.unit }}</td>
+            <td>
+                {% if order.status == 'pending' %}
+                    <span class="badge bg-warning">Inasubiri</span>
+                {% elif order.status == 'accepted' %}
+                    <span class="badge bg-success">Imekubaliwa</span>
+                {% elif order.status == 'rejected' %}
+                    <span class="badge bg-danger">Imekataliwa</span>
+                {% elif order.status == 'fulfilled' %}
+                    <span class="badge bg-info">Imetimizwa</span>
+                {% endif %}
+            </td>
+            <td>{{ order.created_at.strftime('%d/%m/%Y') }}</td>
+            <td>
+                {% if order.status == 'pending' %}
+                    <a href="{{ url_for('supplier.accept_order', id=order.id) }}" class="btn btn-sm btn-success">Kubali</a>
+                    <a href="{{ url_for('supplier.reject_order', id=order.id) }}" class="btn btn-sm btn-danger">Kataa</a>
+                {% elif order.status == 'accepted' %}
+                    <a href="{{ url_for('supplier.fulfill_order', id=order.id) }}" class="btn btn-sm btn-info">Timiza</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

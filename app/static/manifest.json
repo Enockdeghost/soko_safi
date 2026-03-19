@@ -1,0 +1,9 @@
+{
+  "name": "Soko Safi",
+  "short_name": "SokoSafi",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a1a2f",
+  "theme_color": "#00a86b",
+  "icons": [{"src": "/static/icon-192.png", "sizes": "192x192", "type": "image/png"}]
+}

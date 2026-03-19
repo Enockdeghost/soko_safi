@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Maagizo kwa Wasambazaji{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-truck text-accent me-2"></i>Tuma Ombi Jipya</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.supplier_id.label(class="form-label small text-muted") }}
+                        {{ form.supplier_id(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.product_name.label(class="form-label small text-muted") }}
+                        {{ form.product_name(class="form-control") }}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.quantity.label(class="form-label small text-muted") }}
+                            {{ form.quantity(class="form-control") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.unit.label(class="form-label small text-muted") }}
+                            {{ form.unit(class="form-select") }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100"><i class="fas fa-paper-plane me-2"></i>Tuma Ombi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-history text-accent me-2"></i>Maagizo Yaliyotumwa</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Bidhaa</th>
+                                <th>Msambazaji</th>
+                                <th>Idadi</th>
+                                <th>Hali</th>
+                                <th>Tarehe</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{ order.product_name }}</td>
+                                <td>{{ order.supplier.business_name }}</td>
+                                <td>{{ order.quantity }} {{ order.unit }}</td>
+                                <td>
+                                    <span class="badge bg-{% if order.status == 'pending' %}warning{% elif order.status == 'accepted' %}success{% elif order.status == 'rejected' %}danger{% else %}info{% endif %}">
+                                        {{ order.status }}
+                                    </span>
+                                </td>
+                                <td>{{ order.created_at.strftime('%d/%m') }}</td>
+                                <td>
+                                    {% if order.status in ['pending', 'accepted'] %}
+                                    <a href="{{ url_for('vendor.cancel_supplier_order', id=order.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Ghairi?')"><i class="fas fa-times"></i></a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

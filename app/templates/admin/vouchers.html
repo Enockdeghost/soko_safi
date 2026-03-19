@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Vocha{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Unda Vocha Mpya</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.amount.label(class="form-label") }}
+                        {{ form.amount(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.beneficiary_name.label(class="form-label") }}
+                        {{ form.beneficiary_name(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.beneficiary_phone.label(class="form-label") }}
+                        {{ form.beneficiary_phone(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.expiry_date.label(class="form-label") }}
+                        {{ form.expiry_date(class="form-control", type="date") }}
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Unda</button>
+                </form>
+                <hr>
+                <a href="{{ url_for('admin.bulk_vouchers') }}" class="btn btn-outline-success w-100">Unda Vocha Nyingi</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Vocha Zilizopo</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Kiasi</th>
+                            <th>Mnufaika</th>
+                            <th>Hali</th>
+                            <th>Muda</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v in vouchers.items %}
+                        <tr>
+                            <td>{{ v.code }}</td>
+                            <td>TZS {{ "{:,.0f}".format(v.amount) }}</td>
+                            <td>{{ v.beneficiary_name or '-' }}</td>
+                            <td>
+                                {% if v.status == 'active' %}
+                                    <span class="badge bg-success">Inatumika</span>
+                                {% elif v.status == 'redeemed' %}
+                                    <span class="badge bg-info">Imetumika</span>
+                                {% elif v.status == 'expired' %}
+                                    <span class="badge bg-secondary">Imeisha</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Imebatilishwa</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ v.created_at.strftime('%d/%m') }}</td>
+                            <td>
+                                {% if v.status == 'active' %}
+                                    <a href="{{ url_for('admin.revoke_voucher', id=v.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Batilisha?')">Batilisha</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

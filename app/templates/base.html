@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="{{ g.locale }}" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Soko Safi - Jukwaa la kidijitali kwa wafanyabiashara wadogo Tanzania">
+    <meta name="theme-color" content="#0a1a2f">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    
+    <title>Soko Safi - {% block title %}{% endblock %}</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                <i class="fas fa-store me-2"></i>Soko Safi
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <!-- Public links (visible to all) -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}">
+                            <i class="fas fa-home me-1"></i>Nyumbani
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.about') }}">
+                            <i class="fas fa-info-circle me-1"></i>Kuhusu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.contact') }}">
+                            <i class="fas fa-envelope me-1"></i>Wasiliana
+                        </a>
+                    </li>
+
+                    {% if current_user.is_authenticated %}
+                        <!-- Role-specific dashboard links -->
+                        {% if current_user.role == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashibodi
+                                </a>
+                            </li>
+                        {% elif current_user.role == 'vendor' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('vendor.dashboard') }}">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashibodi
+                                </a>
+                            </li>
+                        {% elif current_user.role == 'supplier' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('supplier.dashboard') }}">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashibodi
+                                </a>
+                            </li>
+                        {% elif current_user.role == 'buyer' %}
+                            <!-- Buyer specific links -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('buyer.catalog') }}">
+                                    <i class="fas fa-search me-1"></i>Vinjali
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link position-relative" href="{{ url_for('buyer.view_cart') }}">
+                                    <i class="fas fa-shopping-cart me-1"></i>Rukwama
+                                    {% if cart_count is defined and cart_count > 0 %}
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
+                                            {{ cart_count }}
+                                            <span class="visually-hidden">bidhaa kwenye rukwama</span>
+                                        </span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('buyer.dashboard') }}">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashibodi
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <!-- User dropdown (common for all authenticated users) -->
+                        <li class="nav-item dropdown ms-lg-2">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i>{{ current_user.full_name or current_user.phone }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">
+                                    <i class="fas fa-id-card me-2"></i>Wasifu
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Ondoka
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <!-- Guest links -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Ingia
+                            </a>
+                        </li>
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-success" href="{{ url_for('auth.register') }}">
+                                <i class="fas fa-user-plus me-1"></i>Jisajili
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <!-- Theme toggle button -->
+                    <li class="nav-item ms-lg-3">
+                        <button id="theme-toggle" class="btn btn-outline-light" title="Badilisha mandhari">
+                            <i id="theme-icon" class="fas fa-moon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main content -->
+    <main class="container py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Theme switcher JS -->
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+
+    <!-- Optional offline sync script -->
+    {% if request.endpoint not in ['auth.login', 'auth.register'] %}
+        <script src="{{ url_for('static', filename='js/offline.js') }}"></script>
+    {% endif %}
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

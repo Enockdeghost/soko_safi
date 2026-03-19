@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Mauzo{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="card border-0 bg-primary-card shadow-sm mb-4">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-cart-plus text-accent me-2"></i>Rekodi Mauzo</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.product_id.label(class="form-label small text-muted") }}
+                        {{ form.product_id(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.quantity.label(class="form-label small text-muted") }}
+                        {{ form.quantity(class="form-control", step="0.01") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.payment_method.label(class="form-label small text-muted") }}
+                        {{ form.payment_method(class="form-select") }}
+                    </div>
+                    <button type="submit" class="btn btn-success w-100"><i class="fas fa-save me-2"></i>Rekodi</button>
+                </form>
+                <hr class="border-secondary">
+                <h6>Redeem Vocha</h6>
+                <form action="{{ url_for('vendor.redeem_voucher') }}" method="POST">
+                    <div class="input-group">
+                        <input type="text" name="code" class="form-control" placeholder="Ingiza namba ya vocha" required>
+                        <button class="btn btn-outline-success" type="submit">Tumia</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-history text-accent me-2"></i>Historia ya Mauzo</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Bidhaa</th>
+                                <th>Idadi</th>
+                                <th>Jumla</th>
+                                <th>Muda</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale in sales %}
+                            <tr>
+                                <td>{{ sale.product.name }}</td>
+                                <td>{{ sale.quantity }}</td>
+                                <td>TZS {{ "{:,.0f}".format(sale.total_price) }}</td>
+                                <td>{{ sale.timestamp.strftime('%d/%m %H:%M') }}</td>
+                                <td>
+                                    <a href="{{ url_for('vendor.delete_sale', id=sale.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Futa?')"><i class="fas fa-trash"></i></a>
+                                    <a href="{{ url_for('vendor.print_receipt', sale_id=sale.id) }}" class="btn btn-sm btn-outline-info" target="_blank"><i class="fas fa-print"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Toa Maoni{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-star text-accent me-2"></i>Toa maoni kwa agizo #{{ order.order_number }}</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Ukadiriaji</label>
+                        <div class="rating">
+                            <input type="radio" name="rating" value="5" id="star5"><label for="star5">⭐</label>
+                            <input type="radio" name="rating" value="4" id="star4"><label for="star4">⭐</label>
+                            <input type="radio" name="rating" value="3" id="star3"><label for="star3">⭐</label>
+                            <input type="radio" name="rating" value="2" id="star2"><label for="star2">⭐</label>
+                            <input type="radio" name="rating" value="1" id="star1"><label for="star1">⭐</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Maoni yako</label>
+                        <textarea name="comment" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Wasilisha</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .rating { display: flex; flex-direction: row-reverse; justify-content: flex-end; }
+    .rating input { display: none; }
+    .rating label { font-size: 2rem; padding: 0 0.2rem; color: #ddd; cursor: pointer; }
+    .rating input:checked ~ label, .rating label:hover, .rating label:hover ~ label { color: #ffc107; }
+</style>
+{% endblock %}

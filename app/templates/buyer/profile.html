@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Wasifu Wangu{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-user-circle text-accent me-2"></i>Wasifu Wangu</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Namba ya simu:</strong> {{ current_user.phone }}</p>
+                <p><strong>Jina:</strong> {{ current_user.full_name or 'Haujawekwa' }}</p>
+                <p><strong>Pointi za uaminifu:</strong> <span class="badge bg-success">{{ profile.loyalty_points }}</span></p>
+                <hr class="border-secondary">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Anwani yako ya kawaida</label>
+                        <textarea name="address" class="form-control" rows="2">{{ profile.default_address or '' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Hifadhi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Ripoti{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Chagua Kipindi cha Ripoti</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.start_date.label(class="form-label") }}
+                        {{ form.start_date(class="form-control", type="date") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.end_date.label(class="form-label") }}
+                        {{ form.end_date(class="form-control", type="date") }}
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Tazama Ripoti</button>
+                </form>
+                <hr>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('vendor.export_pdf') }}" class="btn btn-outline-success">Pakua PDF (siku 30 za mwisho)</a>
+                    <a href="{{ url_for('vendor.export_csv') }}" class="btn btn-outline-success">Pakua CSV</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

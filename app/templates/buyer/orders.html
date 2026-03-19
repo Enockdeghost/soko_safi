@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Maagizo Yangu{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-history text-accent me-2"></i>Maagizo Yangu</h2>
+<div class="card border-0 bg-primary-card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Namba</th>
+                        <th>Tarehe</th>
+                        <th>Muuzaji</th>
+                        <th>Jumla</th>
+                        <th>Hali</th>
+                        <th>Malipo</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.order_number }}</td>
+                        <td>{{ order.created_at.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ order.vendor.shop.name }}</td>
+                        <td>TZS {{ "{:,.0f}".format(order.total_amount) }}</td>
+                        <td>
+                            <span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{% if order.payment_status == 'paid' %}success{% else %}secondary{% endif %}">
+                                {{ order.payment_status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('buyer.order_detail', id=order.id) }}" class="btn btn-sm btn-outline-success">Angalia</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

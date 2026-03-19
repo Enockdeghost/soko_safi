@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Wafanyabiashara{% endblock %}
+{% block content %}
+<h2>Wafanyabiashara</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Jina</th>
+            <th>Simu</th>
+            <th>Duka</th>
+            <th>Hali</th>
+            <th>Hatua</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vendor in vendors.items %}
+        <tr>
+            <td>{{ vendor.id }}</td>
+            <td>{{ vendor.full_name or '-' }}</td>
+            <td>{{ vendor.phone }}</td>
+            <td>{{ vendor.shop.name if vendor.shop else '-' }}</td>
+            <td>
+                {% if vendor.is_active %}
+                    <span class="badge bg-success">Inatumika</span>
+                {% else %}
+                    <span class="badge bg-danger">Imesitishwa</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('admin.vendor_detail', id=vendor.id) }}" class="btn btn-sm btn-info">Angalia</a>
+                <a href="{{ url_for('admin.toggle_vendor_active', id=vendor.id) }}" class="btn btn-sm btn-warning">
+                    {% if vendor.is_active %}Zima{% else %}Washa{% endif %}
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<!-- pagination -->
+{% endblock %}

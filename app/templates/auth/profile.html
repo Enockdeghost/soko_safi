@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Wasifu Wangu{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Taarifa za Akaunti</h5>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-user-circle fa-5x mb-3" style="color: var(--accent);"></i>
+                <h5>{{ user.full_name or 'Hakuna jina' }}</h5>
+                <p class="text-muted">{{ user.phone }}</p>
+                <p><span class="badge bg-success">{{ user.role|title }}</span></p>
+                <a href="{{ url_for('auth.change_password') }}" class="btn btn-outline-success btn-sm">Badilisha Nenosiri</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Hariri Wasifu</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Jina Kamili</label>
+                        <input type="text" name="full_name" class="form-control" value="{{ user.full_name or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Namba ya Simu</label>
+                        <input type="text" class="form-control" value="{{ user.phone }}" disabled>
+                        <small class="text-muted">Haiwezi kubadilishwa</small>
+                    </div>
+                    <button type="submit" class="btn btn-success">Sasisha</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
