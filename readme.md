@@ -1,4 +1,4 @@
-# Soko Safi – Vendor Digitisation Web App
+# Soko Safi – Vendor Digitisation Web
 
 Soko Safi is a digital marketplace and business management platform designed for small merchants in Tanzania. It helps vendors manage inventory, track sales, connect with suppliers, and accept mobile money payments through a simple, mobile-first interface available in Swahili and English.
 
