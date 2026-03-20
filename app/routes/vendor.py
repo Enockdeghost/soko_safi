@@ -30,9 +30,7 @@ def get_shop_or_abort():
         return redirect(url_for('auth.setup_wizard'))
     return shop
 
-# ----------------------------------------------------------------------
-# DASHBOARD (with all advanced metrics)
-# ----------------------------------------------------------------------
+
 @bp.route('/dashboard')
 @login_required
 @vendor_required
@@ -258,9 +256,6 @@ def dashboard():
         sales_data=sales_data
     )
 
-# ----------------------------------------------------------------------
-# QUICK ACTIONS
-# ----------------------------------------------------------------------
 @bp.route('/quick-sale', methods=['POST'])
 @login_required
 @vendor_required
@@ -309,11 +304,8 @@ def quick_expense():
     db.session.commit()
     log_transaction(current_user.id, 'quick_expense', f'Added expense TZS {amount}', request.remote_addr)
     flash('Gharama imeongezwa!', 'success')
-    return redirect(url_for('vendor.dashboard'))
-
-# ----------------------------------------------------------------------
-# INVENTORY MANAGEMENT
-# ----------------------------------------------------------------------
+    return redirect(url_for('vendor.dashboard')
+                    
 @bp.route('/inventory')
 @login_required
 @vendor_required
@@ -441,9 +433,7 @@ def delete_sale(id):
     flash('Rekodi ya mauzo imefutwa.', 'success')
     return redirect(url_for('vendor.sales'))
 
-# ----------------------------------------------------------------------
-# EXPENSES
-# ----------------------------------------------------------------------
+
 @bp.route('/expenses', methods=['GET', 'POST'])
 @login_required
 @vendor_required
@@ -483,9 +473,6 @@ def delete_expense(id):
     flash('Gharama imefutwa.', 'success')
     return redirect(url_for('vendor.expenses'))
 
-# ----------------------------------------------------------------------
-# EXPENSE CATEGORIES
-# ----------------------------------------------------------------------
 @bp.route('/expense-categories', methods=['GET', 'POST'])
 @login_required
 @vendor_required
@@ -517,9 +504,7 @@ def delete_expense_category(id):
     flash('Aina ya gharama imefutwa.', 'success')
     return redirect(url_for('vendor.expense_categories'))
 
-# ----------------------------------------------------------------------
-# SUPPLIER ORDERS
-# ----------------------------------------------------------------------
+
 @bp.route('/supplier-orders', methods=['GET', 'POST'])
 @login_required
 @vendor_required
