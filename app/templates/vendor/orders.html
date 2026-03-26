@@ -1,47 +1,77 @@
 {% extends "base.html" %}
-{% block title %}Maagizo ya Wateja{% endblock %}
+{% block title %}Matangazo ya Mauzo{% endblock %}
 {% block content %}
-<h2 class="mb-4"><i class="fas fa-truck text-accent me-2"></i>Maagizo ya Wateja</h2>
-<div class="card border-0 bg-primary-card shadow-sm">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Namba</th>
-                        <th>Mnunuzi</th>
-                        <th>Tarehe</th>
-                        <th>Jumla</th>
-                        <th>Hali</th>
-                        <th>Malipo</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in orders %}
-                    <tr>
-                        <td>#{{ order.order_number }}</td>
-                        <td>{{ order.buyer.full_name or order.buyer.phone }}</td>
-                        <td>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
-                        <td>TZS {{ "{:,.0f}".format(order.total_amount) }}</td>
-                        <td>
-                            <form method="POST" action="{{ url_for('vendor.update_order_status', id=order.id) }}" class="d-flex gap-1">
-                                <select name="status" class="form-select form-select-sm" style="width: auto;">
-                                    <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Inasubiri</option>
-                                    <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>Inachakatwa</option>
-                                    <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Imesafirishwa</option>
-                                    <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Imewasilishwa</option>
-                                    <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Imegairiwa</option>
-                                </select>
-                                <button type="submit" class="btn btn-sm btn-outline-success"><i class="fas fa-save"></i></button>
-                            </form>
-                        </td>
-                        <td><span class="badge bg-{% if order.payment_status == 'paid' %}success{% else %}secondary{% endif %}">{{ order.payment_status }}</span></td>
-                        <td><a href="{{ url_for('vendor.order_detail', id=order.id) }}" class="btn btn-sm btn-outline-info">Angalia</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="row">
+    <div class="col-md-5">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-tags text-accent me-2"></i>Unda Tangazo Jipya</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Bidhaa (acha wazi kwa duka zima)</label>
+                        <select name="product_id" class="form-select">
+                            <option value="">-- Duka zima --</option>
+                            {% for p in products %}
+                            <option value="{{ p.id }}">{{ p.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Punguzo la asilimia</label>
+                        <input type="number" name="discount" class="form-control" min="1" max="100" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-muted">Anza tarehe</label>
+                            <input type="date" name="start_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small text-muted">Maliza tarehe</label>
+                            <input type="date" name="end_date" class="form-control" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Unda Tangazo</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-list text-accent me-2"></i>Matangazo Yaliyopo</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            32
+                                <th>Bidhaa</th>
+                                <th>Punguzo</th>
+                                <th>Muda</th>
+                                <th>Hali</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for promo in promos %}
+                            <tr>
+                                <td>{{ promo.product.name if promo.product else 'Duka zima' }}</td>
+                                <td>{{ promo.discount_percent }}%</td>
+                                <td>{{ promo.start_date.strftime('%d/%m') }} - {{ promo.end_date.strftime('%d/%m') }}</td>
+                                <td>
+                                    {% if promo.is_active and promo.end_date > now %}
+                                        <span class="badge bg-success">Inatumika</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Imeisha</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

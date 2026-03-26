@@ -17,54 +17,32 @@ from datetime import datetime, date, timedelta
 from sqlalchemy import func
 import secrets
 
-# ----------------------------------------------------------------------
-# ADMIN DASHBOARD
-# ----------------------------------------------------------------------
+
 @bp.route('/dashboard')
 @login_required
 @admin_required
 def dashboard():
-    # Summary statistics
+    total_users = User.query.count()
     total_vendors = User.query.filter_by(role='vendor').count()
-    total_suppliers = User.query.filter_by(role='supplier').count()
-    total_shops = Shop.query.count()
     pending_shops = Shop.query.filter_by(verified=False).count()
-    pending_suppliers = Supplier.query.filter_by(verified=False).count()
-    pending_grants = GrantApplication.query.filter_by(status='pending').count()
     active_vouchers = Voucher.query.filter_by(status='active').count()
 
-    # Recent activities (last 10 transaction logs)
+    # Fixed queries with proper joins and ordering
+    pending_shops_list = Shop.query.filter_by(verified=False).order_by(Shop.created_at.desc()).limit(5).all()
+    pending_suppliers_list = Supplier.query.filter_by(verified=False).join(User).order_by(User.created_at.desc()).limit(5).all()
+    pending_grants_list = GrantApplication.query.filter_by(status='pending').order_by(GrantApplication.applied_at.desc()).limit(5).all()
     recent_logs = TransactionLog.query.order_by(TransactionLog.timestamp.desc()).limit(10).all()
 
-    # Sales summary (today)
-    today_sales = db.session.query(func.sum(Sale.total_price)).filter(
-        func.date(Sale.timestamp) == date.today()
-    ).scalar() or 0
+    return render_template('admin/dashboard.html',
+                           total_users=total_users,
+                           total_vendors=total_vendors,
+                           pending_shops=pending_shops,
+                           active_vouchers=active_vouchers,
+                           pending_shops_list=pending_shops_list,
+                           pending_suppliers_list=pending_suppliers_list,
+                           pending_grants_list=pending_grants_list,
+                           recent_logs=recent_logs)
 
-    # New vendors this month
-    month_start = date.today().replace(day=1)
-    new_vendors = User.query.filter(
-        User.role == 'vendor',
-        func.date(User.created_at) >= month_start
-    ).count()
-
-    return render_template(
-        'admin/dashboard.html',
-        total_vendors=total_vendors,
-        total_suppliers=total_suppliers,
-        total_shops=total_shops,
-        pending_shops=pending_shops,
-        pending_suppliers=pending_suppliers,
-        pending_grants=pending_grants,
-        active_vouchers=active_vouchers,
-        recent_logs=recent_logs,
-        today_sales=today_sales,
-        new_vendors=new_vendors
-    )
-
-# ----------------------------------------------------------------------
-# VENDOR MANAGEMENT
-# ----------------------------------------------------------------------
 @bp.route('/vendors')
 @login_required
 @admin_required

@@ -10,7 +10,7 @@ from datetime import datetime
 import secrets
 
 @bp.route('/login', methods=['GET', 'POST'])
-@limiter.limit("1000 per hour")
+@limiter.limit("100 per hour")
 @logout_required
 def login():
     form = LoginForm()
@@ -20,16 +20,24 @@ def login():
             login_user(user, remember=form.remember.data)
             log_transaction(user.id, 'login', f'User logged in from IP {request.remote_addr}', request.remote_addr)
 
+            # Role-based redirect
             if user.role == 'admin':
                 return redirect(url_for('admin.dashboard'))
-            elif user.shop:
-                return redirect(url_for('vendor.dashboard'))
+            elif user.role == 'vendor':
+                if user.shop:
+                    return redirect(url_for('vendor.dashboard'))
+                else:
+                    # Vendor without a shop goes to setup wizard
+                    return redirect(url_for('auth.setup_wizard'))
             elif user.role == 'supplier':
-                return redirect(url_for('supplier.dashboard'))
-            else:
+                if user.supplier_profile and user.supplier_profile.verified:
+                    return redirect(url_for('supplier.dashboard'))
+                else:
+                    flash('Akaunti yako ya msambazaji inasubiri kuthibitishwa.', 'info')
+                    return redirect(url_for('main.index'))
+            else:  # buyer
                 return redirect(url_for('buyer.dashboard'))
-        else:
-            flash('Namba ya simu au nenosiri si sahihi.', 'danger')
+
     return render_template('auth/login.html', form=form)
 
 @bp.route('/logout')
@@ -41,7 +49,7 @@ def logout():
     return redirect(url_for('main.index'))
 
 @bp.route('/register', methods=['GET', 'POST'])
-@limiter.limit("3 per hour")
+@limiter.limit("100 per hour")
 @logout_required
 def register():
     form = RegistrationForm()

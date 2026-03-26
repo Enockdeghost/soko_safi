@@ -86,6 +86,7 @@ class Product(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    barcode = db.Column(db.String(50), unique=True, index=True, nullable=True)
 
     sales = db.relationship('Sale', backref='product', lazy='dynamic')
     cart_items = db.relationship('Cart', backref='product', lazy='dynamic')

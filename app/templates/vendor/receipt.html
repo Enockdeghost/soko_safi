@@ -1,16 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <title>Risiti</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risiti ya Soko Safi</title>
     <style>
-        body { font-family: 'Courier New', monospace; max-width: 300px; margin: auto; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Courier New', 'Courier', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            background: #fff;
+            color: #000;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px 10px;
+        }
         .text-center { text-align: center; }
         .text-right { text-align: right; }
-        .border-bottom { border-bottom: 1px dashed #000; padding-bottom: 5px; margin-bottom: 5px; }
+        .border-bottom {
+            border-bottom: 1px dashed #aaa;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
         .mt-3 { margin-top: 15px; }
         .mb-1 { margin-bottom: 5px; }
         .fw-bold { font-weight: bold; }
+        hr {
+            border: none;
+            border-top: 1px dashed #aaa;
+            margin: 10px 0;
+        }
+        @media print {
+            body { margin: 0; padding: 0; }
+            .no-print { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -18,26 +46,45 @@
         <h2>Soko Safi</h2>
         <p>{{ shop.name }}</p>
         <p>{{ shop.location }}</p>
-        <p>Simu: {{ current_user.phone }}</p>
+        <p>Simu: {{ shop.vendor.phone }}</p>
         <hr>
     </div>
+
     <div>
         <p>Risiti #{{ sale.id }}</p>
         <p>Tarehe: {{ sale.timestamp.strftime('%d/%m/%Y %H:%M') }}</p>
     </div>
+
     <div class="border-bottom">
         <p>Bidhaa: {{ sale.product.name }}</p>
         <p>Idadi: {{ sale.quantity }} {{ sale.product.unit }}</p>
         <p>Bei: TZS {{ "{:,.0f}".format(sale.product.price) }} / {{ sale.product.unit }}</p>
         <p class="text-right fw-bold">Jumla: TZS {{ "{:,.0f}".format(sale.total_price) }}</p>
     </div>
+
     <div>
         <p>Njia ya malipo: {{ sale.payment_method|upper }}</p>
+        {% if sale.order %}
+        <p>Agizo #: {{ sale.order.order_number }}</p>
+        {% endif %}
     </div>
+
     <div class="text-center mt-3">
         <p>Asante kwa kununua!</p>
         <p>Soko Safi - Biashara Rahisi</p>
+        <p><small>Hakikisha umehifadhi risiti hii kwa usalama.</small></p>
     </div>
-    <script>window.print();</script>
+
+    <!-- Optional: QR code will appear here when implemented -->
+    <div class="text-center mt-3">
+        <img src="{{ qr_code }}" alt="QR Code" width="100">
+    </div>
+
+    <script>
+        // Automatically trigger print dialog when page loads
+        window.onload = function() {
+            window.print();
+        };
+    </script>
 </body>
 </html>

@@ -1,12 +1,11 @@
 from flask import render_template, redirect, url_for, flash, request, abort, send_file, Response
 from flask_login import login_required, current_user
 from app import db
-from flask import Response
 from app.models import (
     User, Shop, Product, Sale, Expense, ExpenseCategory,
     OrderRequest, Supplier, Voucher, VoucherRedemption,
     TrainingProgram, TrainingApplication, GrantApplication,
-    Notification, TransactionLog
+    Notification, TransactionLog, Order, Promotion, Cart, Category
 )
 from app.forms import (
     ProductForm, SaleForm, ExpenseForm, ExpenseCategoryForm,
@@ -30,7 +29,9 @@ def get_shop_or_abort():
         return redirect(url_for('auth.setup_wizard'))
     return shop
 
-
+# ----------------------------------------------------------------------
+# DASHBOARD (with all advanced metrics)
+# ----------------------------------------------------------------------
 @bp.route('/dashboard')
 @login_required
 @vendor_required
@@ -256,6 +257,9 @@ def dashboard():
         sales_data=sales_data
     )
 
+# ----------------------------------------------------------------------
+# QUICK ACTIONS
+# ----------------------------------------------------------------------
 @bp.route('/quick-sale', methods=['POST'])
 @login_required
 @vendor_required
@@ -304,21 +308,89 @@ def quick_expense():
     db.session.commit()
     log_transaction(current_user.id, 'quick_expense', f'Added expense TZS {amount}', request.remote_addr)
     flash('Gharama imeongezwa!', 'success')
-    return redirect(url_for('vendor.dashboard')
-                    
+    return redirect(url_for('vendor.dashboard'))
+
+# ----------------------------------------------------------------------
+# INVENTORY MANAGEMENT
+# ----------------------------------------------------------------------
 @bp.route('/inventory')
 @login_required
 @vendor_required
 def inventory():
     shop = get_shop_or_abort()
+    if isinstance(shop, Response):
+        return shop
     products = Product.query.filter_by(shop_id=shop.id).order_by(Product.name).all()
     return render_template('vendor/inventory.html', products=products)
+
+
+@bp.route('/inventory/export')
+@login_required
+@vendor_required
+def export_inventory():
+    shop = get_shop_or_abort()
+    if isinstance(shop, Response):
+        return shop
+    products = Product.query.filter_by(shop_id=shop.id).all()
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['name', 'price', 'quantity', 'unit', 'expiry_date', 'low_stock_threshold', 'description', 'barcode', 'category_id'])
+    for p in products:
+        writer.writerow([
+            p.name, p.price, p.quantity, p.unit,
+            p.expiry_date.strftime('%Y-%m-%d') if p.expiry_date else '',
+            p.low_stock_threshold, p.description or '',
+            p.barcode or '', p.category_id or ''
+        ])
+    output.seek(0)
+    return send_file(
+        io.BytesIO(output.getvalue().encode('utf-8-sig')),
+        as_attachment=True,
+        download_name='inventory.csv',
+        mimetype='text/csv'
+    )
+
+@bp.route('/inventory/import', methods=['POST'])
+@login_required
+@vendor_required
+def import_inventory():
+    shop = get_shop_or_abort()
+    if isinstance(shop, Response):
+        return shop
+    file = request.files.get('file')
+    if not file:
+        flash('Tafadhali chagua faili la CSV.', 'danger')
+        return redirect(url_for('vendor.inventory'))
+    try:
+        stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+        csv_input = csv.DictReader(stream)
+        for row in csv_input:
+            product = Product(
+                shop_id=shop.id,
+                name=row['name'],
+                price=float(row['price']),
+                quantity=float(row['quantity']),
+                unit=row['unit'],
+                expiry_date=datetime.strptime(row['expiry_date'], '%Y-%m-%d').date() if row.get('expiry_date') else None,
+                low_stock_threshold=float(row['low_stock_threshold']) if row.get('low_stock_threshold') else 5,
+                description=row.get('description', ''),
+                barcode=row.get('barcode', '') or None,
+                category_id=int(row['category_id']) if row.get('category_id') and row['category_id'].strip() else None
+            )
+            db.session.add(product)
+        db.session.commit()
+        flash('Bidhaa zimeingizwa kwa mafanikio.', 'success')
+    except Exception as e:
+        flash(f'Kuna hitilafu katika faili: {str(e)}', 'danger')
+    return redirect(url_for('vendor.inventory'))
 
 @bp.route('/product/add', methods=['GET', 'POST'])
 @login_required
 @vendor_required
 def add_product():
     shop = get_shop_or_abort()
+    if isinstance(shop, Response):
+        return shop
     form = ProductForm()
     if form.validate_on_submit():
         product = Product(
@@ -372,8 +444,9 @@ def delete_product(id):
     flash('Bidhaa imefutwa.', 'success')
     return redirect(url_for('vendor.inventory'))
 
-
-
+# ----------------------------------------------------------------------
+# SALES
+# ----------------------------------------------------------------------
 @bp.route('/sales', methods=['GET', 'POST'])
 @login_required
 @vendor_required
@@ -433,12 +506,16 @@ def delete_sale(id):
     flash('Rekodi ya mauzo imefutwa.', 'success')
     return redirect(url_for('vendor.sales'))
 
-
+# ----------------------------------------------------------------------
+# EXPENSES
+# ----------------------------------------------------------------------
 @bp.route('/expenses', methods=['GET', 'POST'])
 @login_required
 @vendor_required
 def expenses():
     shop = get_shop_or_abort()
+    if isinstance(shop, Response):
+        return shop
     form = ExpenseForm()
     form.category_id.choices = [(c.id, c.name) for c in ExpenseCategory.query.filter_by(shop_id=shop.id).all()]
 
@@ -473,11 +550,16 @@ def delete_expense(id):
     flash('Gharama imefutwa.', 'success')
     return redirect(url_for('vendor.expenses'))
 
+# ----------------------------------------------------------------------
+# EXPENSE CATEGORIES
+# ----------------------------------------------------------------------
 @bp.route('/expense-categories', methods=['GET', 'POST'])
 @login_required
 @vendor_required
 def expense_categories():
     shop = get_shop_or_abort()
+    if isinstance(shop, Response):
+        return shop
     form = ExpenseCategoryForm()
     if form.validate_on_submit():
         cat = ExpenseCategory(shop_id=shop.id, name=form.name.data)
@@ -504,12 +586,16 @@ def delete_expense_category(id):
     flash('Aina ya gharama imefutwa.', 'success')
     return redirect(url_for('vendor.expense_categories'))
 
-
+# ----------------------------------------------------------------------
+# SUPPLIER ORDERS
+# ----------------------------------------------------------------------
 @bp.route('/supplier-orders', methods=['GET', 'POST'])
 @login_required
 @vendor_required
 def supplier_orders():
     shop = get_shop_or_abort()
+    if isinstance(shop, Response):
+        return shop
     form = OrderRequestForm()
     suppliers = Supplier.query.filter_by(verified=True).all()
     form.supplier_id.choices = [(s.id, s.business_name) for s in suppliers]
@@ -560,6 +646,9 @@ def cancel_supplier_order(id):
 @login_required
 @vendor_required
 def reports():
+    shop = get_shop_or_abort()
+    if isinstance(shop, Response):
+        return shop
     form = DateRangeForm()
     if form.validate_on_submit():
         start = form.start_date.data
@@ -600,6 +689,9 @@ def reports():
 @login_required
 @vendor_required
 def export_pdf():
+    shop = get_shop_or_abort()
+    if isinstance(shop, Response):
+        return shop
     end = date.today()
     start = end - timedelta(days=30)
 
@@ -645,6 +737,9 @@ def export_pdf():
 @login_required
 @vendor_required
 def export_csv():
+    shop = get_shop_or_abort()
+    if isinstance(shop, Response):
+        return shop
     end = date.today()
     start = end - timedelta(days=30)
 
@@ -798,6 +893,8 @@ def notifications():
 @vendor_required
 def edit_shop():
     shop = get_shop_or_abort()
+    if isinstance(shop, Response):
+        return shop
     if request.method == 'POST':
         shop.name = request.form.get('name', shop.name)
         shop.location = request.form.get('location', shop.location)
@@ -843,22 +940,14 @@ def vendor_orders():
     orders = Order.query.filter_by(vendor_id=current_user.id).order_by(Order.created_at.desc()).all()
     return render_template('vendor/orders.html', orders=orders)
 
-@bp.route('/order/<int:id>/update-status', methods=['POST'])
+@bp.route('/order/<int:id>')
 @login_required
 @vendor_required
-def update_order_status(id):
+def order_detail(id):
     order = Order.query.get_or_404(id)
     if order.vendor_id != current_user.id:
         abort(403)
-    new_status = request.form.get('status')
-    order.status = new_status
-    db.session.commit()
-    # Notify buyer
-    buyer = User.query.get(order.buyer_id)
-    if buyer:
-        send_sms(buyer.phone, f"Hali ya agizo lako #{order.order_number} imebadilika kuwa {new_status}.")
-    flash('Hali ya agizo imesasishwa.', 'success')
-    return redirect(url_for('vendor.vendor_orders'))
+    return render_template('vendor/order_detail.html', order=order)
 
 @bp.route('/promotions', methods=['GET', 'POST'])
 @login_required

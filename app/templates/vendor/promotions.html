@@ -43,32 +43,34 @@
                 <h5 class="fw-semibold"><i class="fas fa-list text-accent me-2"></i>Matangazo Yaliyopo</h5>
             </div>
             <div class="card-body">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Bidhaa</th>
-                            <th>Punguzo</th>
-                            <th>Muda</th>
-                            <th>Hali</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for promo in promos %}
-                        <tr>
-                            <td>{{ promo.product.name if promo.product else 'Duka zima' }}</td>
-                            <td>{{ promo.discount_percent }}%</td>
-                            <td>{{ promo.start_date.strftime('%d/%m') }} - {{ promo.end_date.strftime('%d/%m') }}</td>
-                            <td>
-                                {% if promo.is_active and promo.end_date > now() %}
-                                <span class="badge bg-success">Inatumika</span>
-                                {% else %}
-                                <span class="badge bg-secondary">Imeisha</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            32
+                                <th>Bidhaa</th>
+                                <th>Punguzo</th>
+                                <th>Muda</th>
+                                <th>Hali</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for promo in promos %}
+                            <tr>
+                                <td>{{ promo.product.name if promo.product else 'Duka zima' }}</td>
+                                <td>{{ promo.discount_percent }}%</td>
+                                <td>{{ promo.start_date.strftime('%d/%m') }} - {{ promo.end_date.strftime('%d/%m') }}</td>
+                                <td>
+                                    {% if promo.is_active and promo.end_date > now %}
+                                        <span class="badge bg-success">Inatumika</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Imeisha</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -1,50 +1,67 @@
 {% extends "base.html" %}
 {% block title %}Mafunzo{% endblock %}
 {% block content %}
-<h2>Mafunzo Yanayopatikana</h2>
-<div class="row">
+<h2 class="mb-4"><i class="fas fa-chalkboard-teacher text-accent me-2"></i>Mafunzo Yanayopatikana</h2>
+
+<div class="row g-4">
     {% for program in programs %}
-    <div class="col-md-4 mb-3">
-        <div class="card">
+    <div class="col-md-4">
+        <div class="card border-0 bg-primary-card shadow-sm h-100">
             <div class="card-body">
-                <h5 class="card-title">{{ program.title }}</h5>
-                <p class="card-text">{{ program.description|truncate(100) }}</p>
-                <p><strong>Kuanza:</strong> {{ program.start_date.strftime('%d/%m/%Y') }}</p>
-                <p><strong>Nafasi:</strong> {{ program.capacity }}</p>
-                <a href="{{ url_for('vendor.apply_training', program_id=program.id) }}" class="btn btn-success btn-sm">Omba</a>
+                <h5 class="card-title fw-semibold">{{ program.title }}</h5>
+                <p class="card-text text-muted small">{{ program.description|truncate(100) }}</p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <span><i class="fas fa-calendar-alt text-accent me-1"></i> {{ program.start_date.strftime('%d/%m/%Y') }}</span>
+                    <span><i class="fas fa-users text-accent me-1"></i> {{ program.capacity }} nafasi</span>
+                </div>
+                <a href="{{ url_for('vendor.apply_training', program_id=program.id) }}" class="btn btn-success btn-sm mt-3 w-100">Omba</a>
             </div>
         </div>
     </div>
     {% else %}
-    <p>Hakuna mafunzo kwa sasa.</p>
+    <div class="col-12 text-center py-5">
+        <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+        <h4>Hakuna mafunzo kwa sasa</h4>
+        <p class="text-muted">Jisajili ili upate taarifa za mafunzo yajayo.</p>
+    </div>
     {% endfor %}
 </div>
 
-<h3 class="mt-4">Maombi Yangu</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Mafunzo</th>
-            <th>Hali</th>
-            <th>Tarehe ya Kuomba</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for app in applications %}
-        <tr>
-            <td>{{ app.program.title }}</td>
-            <td>
-                {% if app.status == 'pending' %}
-                    <span class="badge bg-warning">Inasubiri</span>
-                {% elif app.status == 'approved' %}
-                    <span class="badge bg-success">Imekubaliwa</span>
-                {% else %}
-                    <span class="badge bg-danger">Imekataliwa</span>
-                {% endif %}
-            </td>
-            <td>{{ app.applied_at.strftime('%d/%m/%Y') }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<h3 class="mt-5 mb-4"><i class="fas fa-clipboard-list text-accent me-2"></i>Maombi Yangu</h3>
+<div class="card border-0 bg-primary-card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm table-borderless align-middle">
+                <thead>
+                    <tr class="border-bottom border-secondary">
+                        <th>Mafunzo</th>
+                        <th>Hali</th>
+                        <th>Tarehe ya Kuomba</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td>{{ app.program.title }}</td>
+                        <td>
+                            {% if app.status == 'pending' %}
+                                <span class="badge bg-warning">Inasubiri</span>
+                            {% elif app.status == 'approved' %}
+                                <span class="badge bg-success">Imekubaliwa</span>
+                            {% else %}
+                                <span class="badge bg-danger">Imekataliwa</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ app.applied_at.strftime('%d/%m/%Y') }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">Hujatuma maombi yoyote.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

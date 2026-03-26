@@ -2,383 +2,445 @@
 {% block title %}Dashibodi ya Muuzaji{% endblock %}
 
 {% block content %}
-<!-- Top row: key metrics with icons and trends -->
-<div class="row g-4 mb-4">
-    <div class="col-md-3">
-        <div class="card border-0 bg-primary-card shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-muted small text-uppercase tracking-wide">Mauzo Leo</h6>
-                        <h3 class="fw-bold mb-0">TZS {{ "{:,.0f}".format(today_sales) }}</h3>
-                        <small class="{% if sales_change >= 0 %}text-success{% else %}text-danger{% endif %}">
-                            <i class="fas fa-{% if sales_change >= 0 %}arrow-up{% else %}arrow-down{% endif %} me-1"></i>
-                            {{ sales_change|abs }}%
-                        </small>
-                    </div>
-                    <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
-                        <i class="fas fa-shopping-cart fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 bg-primary-card shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-muted small text-uppercase tracking-wide">Gharama Leo</h6>
-                        <h3 class="fw-bold mb-0">TZS {{ "{:,.0f}".format(today_expenses) }}</h3>
-                        <small class="{% if expense_change <= 0 %}text-success{% else %}text-danger{% endif %}">
-                            <i class="fas fa-{% if expense_change <= 0 %}arrow-down{% else %}arrow-up{% endif %} me-1"></i>
-                            {{ expense_change|abs }}%
-                        </small>
-                    </div>
-                    <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
-                        <i class="fas fa-wallet fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 bg-primary-card shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-muted small text-uppercase tracking-wide">Faida Leo</h6>
-                        <h3 class="fw-bold mb-0">TZS {{ "{:,.0f}".format(today_profit) }}</h3>
-                        <small class="text-accent">{{ profit_margin }}% margin</small>
-                    </div>
-                    <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
-                        <i class="fas fa-chart-line fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 bg-primary-card shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-muted small text-uppercase tracking-wide">Bidhaa Zinazoisha</h6>
-                        <h3 class="fw-bold mb-0">{{ low_stock_count }}</h3>
-                        <small class="text-warning">agiza upya</small>
-                    </div>
-                    <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
-                        <i class="fas fa-exclamation-triangle fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<style>
+  /* Modern link styling */
+  .nav-link-modern {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    margin: 0.2rem 0;
+    border-radius: 0.75rem;
+    color: #e0e0e0;
+    transition: all 0.2s ease;
+    background: rgba(255,255,255,0.02);
+  }
+  .nav-link-modern i {
+    width: 1.5rem;
+    font-size: 1rem;
+    text-align: center;
+  }
+  .nav-link-modern:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transform: translateX(4px);
+  }
+  .nav-link-modern.active {
+    background: linear-gradient(135deg, #00a86b, #008f5f);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,168,107,0.3);
+  }
 
-<!-- Daily Target Progress -->
-<div class="card border-0 bg-primary-card shadow-sm mb-4">
-    <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-2">
+  /* Fixed sidebar on desktop, full width main content */
+  @media (min-width: 992px) {
+    .sidebar-fixed {
+      position: fixed;
+      top: 80px;
+      width: 280px; /* match column width */
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+    }
+    .sidebar-fixed .card {
+      border: none;
+      background: rgba(20, 25, 35, 0.6) !important;
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+    }
+    /* Make main content full width on desktop */
+    .full-width-main {
+      margin-left: 300px; /* offset for fixed sidebar */
+      width: calc(100% - 300px);
+    }
+    .col-lg-3 {
+      position: relative;
+      min-height: 1px;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+  }
+</style>
+
+<div class="container-fluid px-4">
+  <div class="row">
+    <!-- Sidebar Navigation - fixed on desktop -->
+    <div class="col-lg-3 mb-4">
+      <div class="sidebar-fixed">
+        <div class="card border-0 bg-primary-card shadow-sm">
+          <div class="card-body p-0">
+            <div class="list-group list-group-flush bg-transparent">
+              <a href="{{ url_for('vendor.dashboard') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern active border-0">
+                <i class="fas fa-tachometer-alt"></i>Dashibodi
+              </a>
+              <a href="{{ url_for('vendor.inventory') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern border-0">
+                <i class="fas fa-boxes"></i>Hisa
+              </a>
+              <a href="{{ url_for('vendor.sales') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern border-0">
+                <i class="fas fa-shopping-cart"></i>Mauzo
+              </a>
+              <a href="{{ url_for('vendor.expenses') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern border-0">
+                <i class="fas fa-wallet"></i>Gharama
+              </a>
+              <a href="{{ url_for('vendor.reports') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern border-0">
+                <i class="fas fa-chart-bar"></i>Ripoti
+              </a>
+              <a href="{{ url_for('vendor.supplier_orders') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern border-0">
+                <i class="fas fa-truck"></i>Wasambazaji
+              </a>
+              <a href="{{ url_for('vendor.promotions') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern border-0">
+                <i class="fas fa-tags"></i>Matangazo
+              </a>
+              <a href="{{ url_for('vendor.vendor_orders') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern border-0">
+                <i class="fas fa-clipboard-list"></i>Maagizo ya Wateja
+              </a>
+              <a href="{{ url_for('vendor.trainings') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern border-0">
+                <i class="fas fa-chalkboard-teacher"></i>Mafunzo
+              </a>
+              <a href="{{ url_for('vendor.grants') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern border-0">
+                <i class="fas fa-gift"></i>Ruzuku
+              </a>
+              <a href="{{ url_for('vendor.notifications') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern border-0">
+                <i class="fas fa-bell"></i>Arifa
+              </a>
+              <a href="{{ url_for('vendor.edit_shop') }}" class="list-group-item list-group-item-action bg-transparent text-light nav-link-modern border-0">
+                <i class="fas fa-store"></i>Hariri Duka
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content - full width on PC -->
+    <div class="col-lg-9 full-width-main">
+      <!-- Top metrics cards (unchanged) -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-3">
+          <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="text-muted small text-uppercase tracking-wide">Mauzo Leo</h6>
+                  <h3 class="fw-bold mb-0">TZS {{ "{:,.0f}".format(today_sales) }}</h3>
+                  <small class="{% if sales_change >= 0 %}text-success{% else %}text-danger{% endif %}">
+                    <i class="fas fa-{% if sales_change >= 0 %}arrow-up{% else %}arrow-down{% endif %} me-1"></i>
+                    {{ sales_change|abs }}%
+                  </small>
+                </div>
+                <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
+                  <i class="fas fa-shopping-cart fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="text-muted small text-uppercase tracking-wide">Gharama Leo</h6>
+                  <h3 class="fw-bold mb-0">TZS {{ "{:,.0f}".format(today_expenses) }}</h3>
+                  <small class="{% if expense_change <= 0 %}text-success{% else %}text-danger{% endif %}">
+                    <i class="fas fa-{% if expense_change <= 0 %}arrow-down{% else %}arrow-up{% endif %} me-1"></i>
+                    {{ expense_change|abs }}%
+                  </small>
+                </div>
+                <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
+                  <i class="fas fa-wallet fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="text-muted small text-uppercase tracking-wide">Faida Leo</h6>
+                  <h3 class="fw-bold mb-0">TZS {{ "{:,.0f}".format(today_profit) }}</h3>
+                  <small class="text-accent">{{ profit_margin }}% margin</small>
+                </div>
+                <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
+                  <i class="fas fa-chart-line fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="text-muted small text-uppercase tracking-wide">Bidhaa Zinazoisha</h6>
+                  <h3 class="fw-bold mb-0">{{ low_stock_count }}</h3>
+                  <small class="text-warning">agiza upya</small>
+                </div>
+                <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
+                  <i class="fas fa-exclamation-triangle fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Target Progress (unchanged) -->
+      <div class="card border-0 bg-primary-card shadow-sm mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
             <h6 class="fw-semibold"><i class="fas fa-bullseye text-accent me-2"></i>Lengo la Leo</h6>
             <form method="POST" action="{{ url_for('vendor.set_target') }}" class="d-flex align-items-center gap-2">
-                <input type="number" name="target" class="form-control form-control-sm" style="width: 120px;" placeholder="TZS" value="{{ daily_target }}" required>
-                <button type="submit" class="btn btn-sm btn-outline-success"><i class="fas fa-save"></i></button>
+              <input type="number" name="target" class="form-control form-control-sm" style="width: 120px;" placeholder="TZS" value="{{ daily_target }}" required>
+              <button type="submit" class="btn btn-sm btn-outline-success"><i class="fas fa-save"></i></button>
             </form>
-        </div>
-        <div class="progress" style="height: 10px;">
+          </div>
+          <div class="progress" style="height: 10px;">
             <div class="progress-bar bg-success" role="progressbar" style="width: {{ target_progress }}%;" aria-valuenow="{{ target_progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <small class="text-muted">{{ "{:,.0f}".format(today_sales) }} / {{ "{:,.0f}".format(daily_target) }} TZS</small>
         </div>
-        <small class="text-muted">{{ "{:,.0f}".format(today_sales) }} / {{ "{:,.0f}".format(daily_target) }} TZS</small>
-    </div>
-</div>
+      </div>
 
-<!-- Two‑column layout for quick actions and insights -->
-<div class="row g-4 mb-4">
-    <!-- Left: Quick actions with voice input -->
-    <div class="col-lg-5">
-        <div class="card border-0 bg-primary-card shadow-sm h-100">
+      <!-- Quick Actions (unchanged) -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-5">
+          <div class="card border-0 bg-primary-card shadow-sm h-100">
             <div class="card-header bg-transparent border-0 pt-3">
-                <h5 class="fw-semibold"><i class="fas fa-bolt text-accent me-2"></i>Vitendo vya Haraka</h5>
+              <h5 class="fw-semibold"><i class="fas fa-bolt text-accent me-2"></i>Vitendo vya Haraka</h5>
             </div>
             <div class="card-body">
-                <!-- Quick Sale with voice -->
-                <form method="POST" action="{{ url_for('vendor.quick_sale') }}" class="mb-3">
-                    <label class="form-label small text-muted"><i class="fas fa-cart-plus me-1"></i>Mauzo ya Haraka</label>
-                    <div class="input-group">
-                        <select name="product_id" class="form-select form-select-sm" required>
-                            <option value="">-- Chagua bidhaa --</option>
-                            {% for p in products %}
-                                <option value="{{ p.id }}">{{ p.name }} - TZS {{ p.price }} ({{ p.quantity }} {{ p.unit }})</option>
-                            {% endfor %}
-                        </select>
-                        <input type="number" name="quantity" class="form-control form-control-sm" placeholder="Idadi" step="0.01" required>
-                        <button class="btn btn-sm btn-success" type="submit"><i class="fas fa-check"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary" type="button" title="Tumia sauti" onclick="startVoiceInput('product_id')"><i class="fas fa-microphone"></i></button>
-                    </div>
-                </form>
-
-                <!-- Quick Expense with voice -->
-                <form method="POST" action="{{ url_for('vendor.quick_expense') }}" class="mb-3">
-                    <label class="form-label small text-muted"><i class="fas fa-money-bill-wave me-1"></i>Gharama ya Haraka</label>
-                    <div class="input-group">
-                        <select name="category_id" class="form-select form-select-sm" required>
-                            <option value="">-- Aina --</option>
-                            {% for cat in expense_categories %}
-                                <option value="{{ cat.id }}">{{ cat.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="number" name="amount" class="form-control form-control-sm" placeholder="Kiasi" step="100" required>
-                        <button class="btn btn-sm btn-success" type="submit"><i class="fas fa-plus"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary" type="button" title="Tumia sauti" onclick="startVoiceInput('amount')"><i class="fas fa-microphone"></i></button>
-                    </div>
-                </form>
-
-                <!-- Low stock with reorder buttons -->
-                <div class="mt-4">
-                    <h6 class="fw-semibold"><i class="fas fa-exclamation-triangle text-warning me-2"></i>Bidhaa Zinazoisha</h6>
-                    {% if low_stock_products %}
-                        <ul class="list-group list-group-flush bg-transparent">
-                            {% for p in low_stock_products %}
-                                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
-                                    <span><i class="fas fa-box text-muted me-2"></i>{{ p.name }} ({{ p.quantity }} {{ p.unit }})</span>
-                                    <a href="{{ url_for('vendor.supplier_orders', product_name=p.name) }}" class="btn btn-sm btn-outline-success"><i class="fas fa-truck me-1"></i>Agiza</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-muted small">Hakuna bidhaa zinazoisha.</p>
-                    {% endif %}
+              <!-- Quick Sale form (unchanged) -->
+              <form method="POST" action="{{ url_for('vendor.quick_sale') }}" class="mb-3">
+                <label class="form-label small text-muted"><i class="fas fa-cart-plus me-1"></i>Mauzo ya Haraka</label>
+                <div class="input-group">
+                  <select name="product_id" class="form-select form-select-sm" required>
+                    <option value="">-- Chagua bidhaa --</option>
+                    {% for p in products %}
+                      <option value="{{ p.id }}">{{ p.name }} - TZS {{ p.price }} ({{ p.quantity }} {{ p.unit }})</option>
+                    {% endfor %}
+                  </select>
+                  <input type="number" name="quantity" class="form-control form-control-sm" placeholder="Idadi" step="0.01" required>
+                  <button class="btn btn-sm btn-success" type="submit"><i class="fas fa-check"></i></button>
+                  <button class="btn btn-sm btn-outline-secondary" type="button" title="Tumia sauti" onclick="startVoiceInput('product_id')"><i class="fas fa-microphone"></i></button>
                 </div>
+              </form>
 
-                <!-- Reorder Suggestions -->
-                {% if reorder_suggestions %}
-                <div class="mt-4">
-                    <h6 class="fw-semibold"><i class="fas fa-lightbulb text-accent me-2"></i>Mapendekezo ya Kuagiza</h6>
-                    <ul class="list-group list-group-flush bg-transparent">
-                        {% for item in reorder_suggestions %}
-                            <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
-                                <span>{{ item.product.name }} ({{ item.days_left }} siku zimesalia)</span>
-                                <a href="{{ url_for('vendor.supplier_orders', product_name=item.product.name) }}" class="btn btn-sm btn-outline-success">Agiza {{ item.suggested_qty }}</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
+              <!-- Quick Expense form (unchanged) -->
+              <form method="POST" action="{{ url_for('vendor.quick_expense') }}" class="mb-3">
+                <label class="form-label small text-muted"><i class="fas fa-money-bill-wave me-1"></i>Gharama ya Haraka</label>
+                <div class="input-group">
+                  <select name="category_id" class="form-select form-select-sm" required>
+                    <option value="">-- Aina --</option>
+                    {% for cat in expense_categories %}
+                      <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                  </select>
+                  <input type="number" name="amount" class="form-control form-control-sm" placeholder="Kiasi" step="100" required>
+                  <button class="btn btn-sm btn-success" type="submit"><i class="fas fa-plus"></i></button>
+                  <button class="btn btn-sm btn-outline-secondary" type="button" title="Tumia sauti" onclick="startVoiceInput('amount')"><i class="fas fa-microphone"></i></button>
                 </div>
+              </form>
+
+              <!-- Low stock list (unchanged) -->
+              <div class="mt-4">
+                <h6 class="fw-semibold"><i class="fas fa-exclamation-triangle text-warning me-2"></i>Bidhaa Zinazoisha</h6>
+                {% if low_stock_products %}
+                  <ul class="list-group list-group-flush bg-transparent">
+                    {% for p in low_stock_products %}
+                      <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fas fa-box text-muted me-2"></i>{{ p.name }} ({{ p.quantity }} {{ p.unit }})</span>
+                        <a href="{{ url_for('vendor.supplier_orders', product_name=p.name) }}" class="btn btn-sm btn-outline-success"><i class="fas fa-truck me-1"></i>Agiza</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <p class="text-muted small">Hakuna bidhaa zinazoisha.</p>
                 {% endif %}
-            </div>
-        </div>
-    </div>
+              </div>
 
-    <!-- Right: Top products and cash flow -->
-    <div class="col-lg-7">
-        <div class="row g-4">
-            <!-- Top selling products -->
-            <div class="col-md-6">
-                <div class="card border-0 bg-primary-card shadow-sm h-100">
-                    <div class="card-header bg-transparent border-0 pt-3">
-                        <h6 class="fw-semibold"><i class="fas fa-star text-accent me-2"></i>Bidhaa Zinazouza Zaidi</h6>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-sm table-borderless align-middle">
-                            {% for p in top_products %}
-                            <tr>
-                                <td><i class="fas fa-circle text-accent me-2 small"></i>{{ p.name }}</td>
-                                <td class="text-end">{{ p.quantity }} {{ p.unit }}</td>
-                                <td class="text-end">TZS {{ "{:,.0f}".format(p.revenue) }}</td>
-                            </tr>
-                            {% endfor %}
-                        </table>
-                    </div>
-                </div>
+              <!-- Reorder suggestions (unchanged) -->
+              {% if reorder_suggestions %}
+              <div class="mt-4">
+                <h6 class="fw-semibold"><i class="fas fa-lightbulb text-accent me-2"></i>Mapendekezo ya Kuagiza</h6>
+                <ul class="list-group list-group-flush bg-transparent">
+                  {% for item in reorder_suggestions %}
+                    <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
+                      <span>{{ item.product.name }} ({{ item.days_left }} siku zimesalia)</span>
+                      <a href="{{ url_for('vendor.supplier_orders', product_name=item.product.name) }}" class="btn btn-sm btn-outline-success">Agiza {{ item.suggested_qty }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
             </div>
-            <!-- Cash flow mini chart -->
-            <div class="col-md-6">
-                <div class="card border-0 bg-primary-card shadow-sm h-100">
-                    <div class="card-header bg-transparent border-0 pt-3">
-                        <h6 class="fw-semibold"><i class="fas fa-chart-pie text-accent me-2"></i>Mtiririko wa Fedha</h6>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="cashflowChart" height="120"></canvas>
-                        <div class="d-flex justify-content-between mt-3 small text-muted">
-                            <span><i class="fas fa-square text-success me-1"></i>Mauzo</span>
-                            <span><i class="fas fa-square text-danger me-1"></i>Gharama</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-    </div>
-</div>
+        <div class="col-md-7">
+          <div class="row g-4">
+            <!-- Top products (unchanged) -->
+            <div class="col-md-6">
+              <div class="card border-0 bg-primary-card shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 pt-3">
+                  <h6 class="fw-semibold"><i class="fas fa-star text-accent me-2"></i>Bidhaa Zinazouza Zaidi</h6>
+                </div>
+                <div class="card-body">
+                  <table class="table table-sm table-borderless align-middle">
+                    {% for p in top_products %}
+                    <tr>
+                      <td><i class="fas fa-circle text-accent me-2 small"></i>{{ p.name }}</td>
+                      <td class="text-end">{{ p.quantity }} {{ p.unit|default('pcs') }}</td>
+                      <td class="text-end">TZS {{ "{:,.0f}".format(p.revenue) }}</td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- Cash flow mini chart (unchanged) -->
+            <div class="col-md-6">
+              <div class="card border-0 bg-primary-card shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 pt-3">
+                  <h6 class="fw-semibold"><i class="fas fa-chart-pie text-accent me-2"></i>Mtiririko wa Fedha</h6>
+                </div>
+                <div class="card-body">
+                  <canvas id="cashflowChart" height="120"></canvas>
+                  <div class="d-flex justify-content-between mt-3 small text-muted">
+                    <span><i class="fas fa-square text-success me-1"></i>Mauzo</span>
+                    <span><i class="fas fa-square text-danger me-1"></i>Gharama</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<!-- Third row: charts and recent activity -->
-<div class="row g-4">
-    <!-- Sales trend (weekly) -->
-    <div class="col-lg-8">
-        <div class="card border-0 bg-primary-card shadow-sm">
+      <!-- Charts and activity (unchanged) -->
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="card border-0 bg-primary-card shadow-sm">
             <div class="card-header bg-transparent border-0 pt-3">
-                <h5 class="fw-semibold"><i class="fas fa-chart-line text-accent me-2"></i>Mwenendo wa Mauzo (Wiki 4)</h5>
+              <h5 class="fw-semibold"><i class="fas fa-chart-line text-accent me-2"></i>Mwenendo wa Mauzo (Wiki 4)</h5>
             </div>
             <div class="card-body">
-                <canvas id="salesChart" height="150"></canvas>
+              <canvas id="salesChart" height="150"></canvas>
             </div>
+          </div>
         </div>
-    </div>
-    <!-- Recent activity feed -->
-    <div class="col-lg-4">
-        <div class="card border-0 bg-primary-card shadow-sm h-100">
+        <div class="col-lg-4">
+          <div class="card border-0 bg-primary-card shadow-sm h-100">
             <div class="card-header bg-transparent border-0 pt-3">
-                <h6 class="fw-semibold"><i class="fas fa-history text-accent me-2"></i>Shughuli za Karibuni</h6>
+              <h6 class="fw-semibold"><i class="fas fa-history text-accent me-2"></i>Shughuli za Karibuni</h6>
             </div>
             <div class="card-body p-0">
-                <div class="list-group list-group-flush bg-transparent">
-                    {% for activity in recent_activities %}
-                    <div class="list-group-item bg-transparent">
-                        <div class="d-flex">
-                            <i class="fas fa-{% if activity.type == 'sale' %}shopping-cart{% else %}wallet{% endif %} text-accent me-3"></i>
-                            <div>
-                                <p class="mb-0 small">{{ activity.description }}</p>
-                                <small class="text-muted">{{ activity.time }}</small>
-                            </div>
-                        </div>
+              <div class="list-group list-group-flush bg-transparent">
+                {% for activity in recent_activities %}
+                <div class="list-group-item bg-transparent">
+                  <div class="d-flex">
+                    <i class="fas fa-{% if activity.type == 'sale' %}shopping-cart{% else %}wallet{% endif %} text-accent me-3"></i>
+                    <div>
+                      <p class="mb-0 small">{{ activity.description }}</p>
+                      <small class="text-muted">{{ activity.time }}</small>
                     </div>
-                    {% endfor %}
+                  </div>
                 </div>
+                {% endfor %}
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
 
-<!-- Fourth row: cash flow forecast and expense breakdown -->
-<div class="row g-4 mt-2">
-    <div class="col-md-6">
-        <div class="card border-0 bg-primary-card shadow-sm">
+      <!-- Forecast and expense breakdown (unchanged) -->
+      <div class="row g-4 mt-2">
+        <div class="col-md-6">
+          <div class="card border-0 bg-primary-card shadow-sm">
             <div class="card-header bg-transparent border-0 pt-3">
-                <h6 class="fw-semibold"><i class="fas fa-chart-line text-accent me-2"></i>Makadirio ya Fedha (Siku 7)</h6>
+              <h6 class="fw-semibold"><i class="fas fa-chart-line text-accent me-2"></i>Makadirio ya Fedha (Siku 7)</h6>
             </div>
             <div class="card-body">
-                <canvas id="forecastChart" height="100"></canvas>
+              <canvas id="forecastChart" height="100"></canvas>
             </div>
+          </div>
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card border-0 bg-primary-card shadow-sm">
+        <div class="col-md-6">
+          <div class="card border-0 bg-primary-card shadow-sm">
             <div class="card-header bg-transparent border-0 pt-3">
-                <h6 class="fw-semibold"><i class="fas fa-chart-pie text-accent me-2"></i>Mgawanyo wa Gharama</h6>
+              <h6 class="fw-semibold"><i class="fas fa-chart-pie text-accent me-2"></i>Mgawanyo wa Gharama</h6>
             </div>
             <div class="card-body">
-                <canvas id="expensePieChart" height="150"></canvas>
+              <canvas id="expensePieChart" height="150"></canvas>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
-<!-- Offline sync status -->
-<div class="position-fixed bottom-0 end-0 m-4" id="sync-status" style="z-index: 1000;">
-    <div class="bg-primary-card shadow rounded-3 p-2 px-3 small">
-        <i class="fas fa-wifi text-success me-1"></i> Mtandao Upo
-        <span class="text-muted mx-2">|</span>
-        <i class="fas fa-cloud-upload-alt text-muted"></i> Data zote zimesawazishwa
-    </div>
-</div>
-
-<!-- Voice input script -->
+<!-- Voice input script (unchanged) -->
 <script>
-    function startVoiceInput(targetId) {
-        if ('webkitSpeechRecognition' in window) {
-            const recognition = new webkitSpeechRecognition();
-            recognition.lang = 'sw-TZ';
-            recognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript;
-                const input = document.querySelector(`[name="${targetId}"]`);
-                if (input) input.value = transcript;
-            };
-            recognition.start();
-        } else {
-            alert('Voice input haitumiki kwenye kifaa chako.');
-        }
+  function startVoiceInput(targetId) {
+    if ('webkitSpeechRecognition' in window) {
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'sw-TZ';
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        const input = document.querySelector(`[name="${targetId}"]`);
+        if (input) input.value = transcript;
+      };
+      recognition.start();
+    } else {
+      alert('Voice input haitumiki kwenye kifaa chako.');
     }
+  }
 </script>
 
-<!-- Chart.js -->
+<!-- Chart.js scripts (unchanged) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Sales chart (last 4 weeks)
+  const labelsWeekly = {{ weekly_labels|tojson }};
+  const dataWeekly = {{ weekly_sales|tojson }};
+  if (labelsWeekly.length && dataWeekly.length) {
     const ctx1 = document.getElementById('salesChart');
     new Chart(ctx1, {
-        type: 'line',
-        data: {
-            labels: {{ weekly_labels|tojson }},
-            datasets: [{
-                label: 'Mauzo',
-                data: {{ weekly_sales|tojson }},
-                borderColor: '#00a86b',
-                backgroundColor: 'rgba(0,168,107,0.05)',
-                tension: 0.2,
-                pointBackgroundColor: '#00a86b',
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } }
-        }
+      type: 'line',
+      data: { labels: labelsWeekly, datasets: [{ label: 'Mauzo', data: dataWeekly, borderColor: '#00a86b', backgroundColor: 'rgba(0,168,107,0.05)', tension: 0.2, pointBackgroundColor: '#00a86b' }] },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } } }
     });
-
-    // Cash flow mini chart (last 7 days)
+  }
+  const days = {{ days|tojson }};
+  const dailySales = {{ daily_sales|tojson }};
+  const dailyExpenses = {{ daily_expenses|tojson }};
+  if (days.length && dailySales.length) {
     const ctx2 = document.getElementById('cashflowChart');
     new Chart(ctx2, {
-        type: 'bar',
-        data: {
-            labels: {{ days|tojson }},
-            datasets: [
-                { label: 'Mauzo', data: {{ daily_sales|tojson }}, backgroundColor: '#00a86b' },
-                { label: 'Gharama', data: {{ daily_expenses|tojson }}, backgroundColor: '#ef4444' }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } }
-        }
+      type: 'bar',
+      data: { labels: days, datasets: [{ label: 'Mauzo', data: dailySales, backgroundColor: '#00a86b' }, { label: 'Gharama', data: dailyExpenses, backgroundColor: '#ef4444' }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } } }
     });
-
-    // Forecast chart
+  }
+  const projDates = {{ projection_dates|tojson }};
+  const projData = {{ projection|tojson }};
+  if (projDates.length && projData.length) {
     const ctx3 = document.getElementById('forecastChart');
     new Chart(ctx3, {
-        type: 'line',
-        data: {
-            labels: {{ projection_dates|tojson }},
-            datasets: [{
-                label: 'Makadirio ya Salio',
-                data: {{ projection|tojson }},
-                borderColor: '#00a86b',
-                backgroundColor: 'rgba(0,168,107,0.1)',
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } }
-        }
+      type: 'line',
+      data: { labels: projDates, datasets: [{ label: 'Makadirio ya Salio', data: projData, borderColor: '#00a86b', backgroundColor: 'rgba(0,168,107,0.1)', fill: true }] },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } } }
     });
-
-    // Expense pie chart
+  }
+  const expenseLabels = {{ expense_labels|tojson }};
+  const expenseData = {{ expense_data|tojson }};
+  if (expenseLabels.length && expenseData.length) {
     const ctx4 = document.getElementById('expensePieChart');
     new Chart(ctx4, {
-        type: 'pie',
-        data: {
-            labels: {{ expense_labels|tojson }},
-            datasets: [{
-                data: {{ expense_data|tojson }},
-                backgroundColor: ['#00a86b', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom', labels: { color: '#b0b0b0' } } }
-        }
+      type: 'pie',
+      data: { labels: expenseLabels, datasets: [{ data: expenseData, backgroundColor: ['#00a86b', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'] }] },
+      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#b0b0b0' } } } }
     });
+  }
 </script>
 {% endblock %}

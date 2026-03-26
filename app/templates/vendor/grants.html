@@ -1,66 +1,72 @@
 {% extends "base.html" %}
 {% block title %}Ruzuku{% endblock %}
 {% block content %}
-<div class="row">
+<div class="row g-4">
     <div class="col-md-5">
-        <div class="card shadow">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Tuma Ombi la Ruzuku</h5>
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-gift text-accent me-2"></i>Tuma Ombi la Ruzuku</h5>
             </div>
             <div class="card-body">
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
-                        {{ form.amount.label(class="form-label") }}
+                        {{ form.amount.label(class="form-label small text-muted") }}
                         {{ form.amount(class="form-control") }}
                     </div>
                     <div class="mb-3">
-                        {{ form.purpose.label(class="form-label") }}
+                        {{ form.purpose.label(class="form-label small text-muted") }}
                         {{ form.purpose(class="form-control", rows=3) }}
                     </div>
                     <div class="mb-3">
-                        {{ form.business_plan.label(class="form-label") }}
+                        {{ form.business_plan.label(class="form-label small text-muted") }}
                         {{ form.business_plan(class="form-control", rows=3) }}
                     </div>
-                    <button type="submit" class="btn btn-success w-100">Tuma</button>
+                    <button type="submit" class="btn btn-success w-100">Tuma Ombi</button>
                 </form>
             </div>
         </div>
     </div>
     <div class="col-md-7">
-        <div class="card shadow">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Maombi Yangu</h5>
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-list text-accent me-2"></i>Maombi Yangu</h5>
             </div>
             <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Kiasi</th>
-                            <th>Sababu</th>
-                            <th>Hali</th>
-                            <th>Tarehe</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for g in grants %}
-                        <tr>
-                            <td>TZS {{ "{:,.0f}".format(g.amount_requested) }}</td>
-                            <td>{{ g.purpose|truncate(30) }}</td>
-                            <td>
-                                {% if g.status == 'pending' %}
-                                    <span class="badge bg-warning">Inasubiri</span>
-                                {% elif g.status == 'approved' %}
-                                    <span class="badge bg-success">Imekubaliwa</span>
-                                {% else %}
-                                    <span class="badge bg-danger">Imekataliwa</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ g.applied_at.strftime('%d/%m/%Y') }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                {% if grants %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless align-middle">
+                        <thead>
+                            <tr class="border-bottom border-secondary">
+                                <th>Kiasi</th>
+                                <th>Sababu</th>
+                                <th>Hali</th>
+                                <th>Tarehe</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for g in grants %}
+                            <tr>
+                                <td>TZS {{ "{:,.0f}".format(g.amount_requested) }}</td>
+                                <td>{{ g.purpose|truncate(30) }}</td>
+                                <td>
+                                    {% if g.status == 'pending' %}
+                                        <span class="badge bg-warning">Inasubiri</span>
+                                    {% elif g.status == 'approved' %}
+                                        <span class="badge bg-success">Imekubaliwa</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Imekataliwa</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ g.applied_at.strftime('%d/%m/%Y') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">Hujatuma maombi ya ruzuku bado.</p>
+                {% endif %}
             </div>
         </div>
     </div>

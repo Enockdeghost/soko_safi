@@ -1,40 +1,247 @@
 {% extends "base.html" %}
-{% block title %}Dashibodi ya Admin{% endblock %}
+{% block title %}Dashibodi ya Msimamizi{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-md-3">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h6>Wafanyabiashara</h6>
-                <h3>{{ total_vendors }}</h3>
+<div class="container-fluid py-4">
+    <div class="row g-4">
+
+        <!-- Sidebar Navigation - Left Side (Sticky) -->
+        <div class="col-lg-3">
+            <div class="card border-0 bg-primary-card shadow-sm sticky-top" style="top: 80px;">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush bg-transparent">
+                        <a href="{{ url_for('admin.dashboard') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light active border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-tachometer-alt me-3"></i>
+                            Dashibodi
+                        </a>
+                        <a href="{{ url_for('admin.users') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-users me-3"></i>
+                            Watumiaji Wote
+                        </a>
+                        <a href="{{ url_for('admin.vendors') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-store me-3"></i>
+                            Wafanyabiashara
+                        </a>
+                        <a href="{{ url_for('admin.shops') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-shop me-3"></i>
+                            Maduka
+                        </a>
+                        <a href="{{ url_for('admin.suppliers') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-truck me-3"></i>
+                            Wasambazaji
+                        </a>
+                        <a href="{{ url_for('admin.vouchers') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-ticket-alt me-3"></i>
+                            Vocha
+                        </a>
+                        <a href="{{ url_for('admin.trainings') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-chalkboard-teacher me-3"></i>
+                            Mafunzo
+                        </a>
+                        <a href="{{ url_for('admin.grants') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-gift me-3"></i>
+                            Ruzuku
+                        </a>
+                        <a href="{{ url_for('admin.logs') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-history me-3"></i>
+                            Rekodi za Shughuli
+                        </a>
+                        <a href="{{ url_for('admin.reports') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-chart-bar me-3"></i>
+                            Ripoti za Mfumo
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-secondary">
-            <div class="card-body">
-                <h6>Wasambazaji</h6>
-                <h3>{{ total_suppliers }}</h3>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+
+            <!-- Summary Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="card border-0 bg-primary-card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted small text-uppercase tracking-wide mb-1">Watumiaji Wote</h6>
+                                    <h3 class="fw-bold mb-0">{{ total_users }}</h3>
+                                </div>
+                                <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
+                                    <i class="fas fa-users fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card border-0 bg-primary-card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted small text-uppercase tracking-wide mb-1">Wafanyabiashara</h6>
+                                    <h3 class="fw-bold mb-0">{{ total_vendors }}</h3>
+                                </div>
+                                <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
+                                    <i class="fas fa-store fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card border-0 bg-primary-card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted small text-uppercase tracking-wide mb-1">Maduka Yasiyothibitishwa</h6>
+                                    <h3 class="fw-bold mb-0">{{ pending_shops }}</h3>
+                                </div>
+                                <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
+                                    <i class="fas fa-shop fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card border-0 bg-primary-card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted small text-uppercase tracking-wide mb-1">Vocha Zinazotumika</h6>
+                                    <h3 class="fw-bold mb-0">{{ active_vouchers }}</h3>
+                                </div>
+                                <div class="icon-shape bg-accent bg-opacity-10 text-accent rounded-3 p-3">
+                                    <i class="fas fa-ticket-alt fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-warning">
-            <div class="card-body">
-                <h6>Maduka Yasiyothibitishwa</h6>
-                <h3>{{ pending_shops }}</h3>
+
+            <!-- Pending Items Table -->
+            <div class="card border-0 bg-primary-card shadow-sm mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="fw-semibold mb-0">
+                        <i class="fas fa-clock text-accent me-2"></i>
+                        Mambo Yanayosubiri Uthibitishaji
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Aina</th>
+                                    <th>Jina / Taarifa</th>
+                                    <th>Tarehe</th>
+                                    <th>Hatua</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for shop in pending_shops_list %}
+                                <tr>
+                                    <td><span class="badge bg-info">Duka</span></td>
+                                    <td>{{ shop.name }} ({{ shop.vendor.full_name }})</td>
+                                    <td>{{ shop.created_at.strftime('%d/%m/%Y') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('admin.verify_shop', id=shop.id) }}" 
+                                           class="btn btn-sm btn-success">Thibitisha</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                                {% for supplier in pending_suppliers_list %}
+                                <tr>
+                                    <td><span class="badge bg-warning">Msambazaji</span></td>
+                                    <td>{{ supplier.business_name }} ({{ supplier.user.full_name }})</td>
+                                    <td>{{ supplier.user.created_at.strftime('%d/%m/%Y') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('admin.verify_supplier', id=supplier.id) }}" 
+                                           class="btn btn-sm btn-success">Thibitisha</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                                {% for grant in pending_grants_list %}
+                                <tr>
+                                    <td><span class="badge bg-danger">Ruzuku</span></td>
+                                    <td>{{ grant.vendor.full_name }} - TZS {{ "{:,.0f}".format(grant.amount_requested) }}</td>
+                                    <td>{{ grant.applied_at.strftime('%d/%m/%Y') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('admin.grants') }}" 
+                                           class="btn btn-sm btn-outline-success">Kagua</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if not pending_shops_list and not pending_suppliers_list and not pending_grants_list %}
+                    <div class="text-center py-5">
+                        <p class="text-muted mb-0">Hakuna mambo yanayosubiri kwa sasa.</p>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-white bg-info">
-            <div class="card-body">
-                <h6>Vocha Zinazotumika</h6>
-                <h3>{{ active_vouchers }}</h3>
+
+            <!-- Recent Activity Logs -->
+            <div class="card border-0 bg-primary-card shadow-sm">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="fw-semibold mb-0">
+                        <i class="fas fa-history text-accent me-2"></i>
+                        Shughuli za Hivi Karibuni
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mtumiaji</th>
+                                    <th>Kitendo</th>
+                                    <th>Maelezo</th>
+                                    <th>Muda</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in recent_logs %}
+                                <tr>
+                                    <td>{{ log.user.full_name or log.user.phone }}</td>
+                                    <td><span class="badge bg-secondary">{{ log.action }}</span></td>
+                                    <td>{{ log.details|truncate(45) }}</td>
+                                    <td>{{ log.timestamp.strftime('%d/%m/%Y %H:%M') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-3">
+                        <a href="{{ url_for('admin.logs') }}" class="btn btn-sm btn-outline-success">
+                            Angalia zote <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
-
-<!-- recent logs etc. -->
 {% endblock %}
