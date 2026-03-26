@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Watumiaji Wote{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-users text-accent me-2"></i>Watumiaji Wote</h2>
+
+<div class="card border-0 bg-primary-card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr class="border-bottom border-secondary">
+                        <th>ID</th>
+                        <th>Jina</th>
+                        <th>Simu</th>
+                        <th>Wajibu</th>
+                        <th>Hali</th>
+                        <th>Tarehe ya Kujiunga</th>
+                        <th>Hatua</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users.items %}
+                    <tr>
+                        <td>{{ u.id }}</td>
+                        <td>{{ u.full_name or '-' }}</td>
+                        <td>{{ u.phone }}</td>
+                        <td>{{ u.role|title }}</td>
+                        <td>
+                            <span class="badge bg-{% if u.is_active %}success{% else %}danger{% endif %}">
+                                {% if u.is_active %}Inatumika{% else %}Imesitishwa{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ u.created_at.strftime('%d/%m/%Y') }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.edit_user', id=u.id) }}" class="btn btn-sm btn-outline-success">Hariri</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if users.pages > 1 %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if users.has_prev %}
+                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.users', page=users.prev_num) }}">«</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">«</span></li>
+                {% endif %}
+
+                {% for page_num in users.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num == users.page %}
+                        <li class="page-item active"><span class="page-link bg-success border-success">{{ page_num }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">…</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if users.has_next %}
+                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.users', page=users.next_num) }}">»</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">»</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

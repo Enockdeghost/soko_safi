@@ -140,3 +140,8 @@ class DateRangeForm(FlaskForm):
     def validate_end_date(self, end_date):
         if end_date.data < self.start_date.data:
             raise ValidationError('Tarehe ya mwisho ni lazima iwe baada ya tarehe ya kuanza.')
+        
+class CategoryForm(FlaskForm):
+    name = StringField('Jina la Aina', validators=[DataRequired(), Length(max=50)])
+    slug = StringField('Slug', validators=[DataRequired(), Length(max=50)])
+    submit = SubmitField('Hifadhi')

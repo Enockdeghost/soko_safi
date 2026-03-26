@@ -1,41 +1,81 @@
 {% extends "base.html" %}
 {% block title %}Wafanyabiashara{% endblock %}
+
 {% block content %}
-<h2>Wafanyabiashara</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Jina</th>
-            <th>Simu</th>
-            <th>Duka</th>
-            <th>Hali</th>
-            <th>Hatua</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for vendor in vendors.items %}
-        <tr>
-            <td>{{ vendor.id }}</td>
-            <td>{{ vendor.full_name or '-' }}</td>
-            <td>{{ vendor.phone }}</td>
-            <td>{{ vendor.shop.name if vendor.shop else '-' }}</td>
-            <td>
-                {% if vendor.is_active %}
-                    <span class="badge bg-success">Inatumika</span>
-                {% else %}
-                    <span class="badge bg-danger">Imesitishwa</span>
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4"><i class="fas fa-store text-accent me-2"></i>Wafanyabiashara</h2>
+
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr class="border-bottom border-secondary">
+                                <th>ID</th>
+                                <th>Jina</th>
+                                <th>Simu</th>
+                                <th>Duka</th>
+                                <th>Hali</th>
+                                <th>Hatua</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vendor in vendors.items %}
+                            <tr>
+                                <td>{{ vendor.id }}</td>
+                                <td>{{ vendor.full_name or '-' }}</td>
+                                <td>{{ vendor.phone }}</td>
+                                <td>{{ vendor.shop.name if vendor.shop else '-' }}</td>
+                                <td>
+                                    <span class="badge bg-{% if vendor.is_active %}success{% else %}danger{% endif %}">
+                                        {% if vendor.is_active %}Inatumika{% else %}Imesitishwa{% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('admin.vendor_detail', id=vendor.id) }}" class="btn btn-sm btn-outline-info">Angalia</a>
+                                    <a href="{{ url_for('admin.toggle_vendor_active', id=vendor.id) }}" class="btn btn-sm btn-outline-{% if vendor.is_active %}danger{% else %}success{% endif %}">
+                                        {% if vendor.is_active %}Zima{% else %}Washa{% endif %}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if vendors.pages > 1 %}
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if vendors.has_prev %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.vendors', page=vendors.prev_num) }}">«</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">«</span></li>
+                        {% endif %}
+
+                        {% for page_num in vendors.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                            {% if page_num %}
+                                {% if page_num == vendors.page %}
+                                <li class="page-item active"><span class="page-link bg-success border-success">{{ page_num }}</span></li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.vendors', page=page_num) }}">{{ page_num }}</a></li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">…</span></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if vendors.has_next %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.vendors', page=vendors.next_num) }}">»</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">»</span></li>
+                        {% endif %}
+                    </ul>
+                </nav>
                 {% endif %}
-            </td>
-            <td>
-                <a href="{{ url_for('admin.vendor_detail', id=vendor.id) }}" class="btn btn-sm btn-info">Angalia</a>
-                <a href="{{ url_for('admin.toggle_vendor_active', id=vendor.id) }}" class="btn btn-sm btn-warning">
-                    {% if vendor.is_active %}Zima{% else %}Washa{% endif %}
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<!-- pagination -->
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

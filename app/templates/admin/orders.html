@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Maagizo Yote{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4"><i class="fas fa-clipboard-list text-accent me-2"></i>Maagizo Yote</h2>
+
+        <div class="card border-0 bg-primary-card shadow-sm mb-4">
+            <div class="card-body">
+                <form method="GET" class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Hali ya Agizo</label>
+                        <select name="status" class="form-select" onchange="this.form.submit()">
+                            <option value="">Zote</option>
+                            <option value="pending" {% if current_status == 'pending' %}selected{% endif %}>Inasubiri</option>
+                            <option value="processing" {% if current_status == 'processing' %}selected{% endif %}>Inachakatwa</option>
+                            <option value="shipped" {% if current_status == 'shipped' %}selected{% endif %}>Imesafirishwa</option>
+                            <option value="delivered" {% if current_status == 'delivered' %}selected{% endif %}>Imewasilishwa</option>
+                            <option value="cancelled" {% if current_status == 'cancelled' %}selected{% endif %}>Imegairiwa</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr class="border-bottom border-secondary">
+                                <th>Namba</th>
+                                <th>Mnunuzi</th>
+                                <th>Muuzaji</th>
+                                <th>Jumla</th>
+                                <th>Hali</th>
+                                <th>Tarehe</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders.items %}
+                            <tr>
+                                <td><code>#{{ order.order_number }}</code></td>
+                                <td>{{ order.buyer.full_name or order.buyer.phone }}</td>
+                                <td>{{ order.vendor.shop.name if order.vendor.shop else order.vendor.phone }}</td>
+                                <td>TZS {{ "{:,.0f}".format(order.total_amount) }}</td>
+                                <td>
+                                    <span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                                        {{ order.status }}
+                                    </span>
+                                </td>
+                                <td>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.order_detail', id=order.id) }}" class="btn btn-sm btn-outline-info">Angalia</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if orders.pages > 1 %}
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if orders.has_prev %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.orders', page=orders.prev_num, status=current_status) }}">«</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">«</span></li>
+                        {% endif %}
+
+                        {% for page_num in orders.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                            {% if page_num %}
+                                {% if page_num == orders.page %}
+                                <li class="page-item active"><span class="page-link bg-success border-success">{{ page_num }}</span></li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.orders', page=page_num, status=current_status) }}">{{ page_num }}</a></li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">…</span></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if orders.has_next %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.orders', page=orders.next_num, status=current_status) }}">»</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">»</span></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

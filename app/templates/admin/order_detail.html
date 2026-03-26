@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Agizo #{{ order.order_number }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-info-circle text-accent me-2"></i>Muhtasari wa Agizo</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Namba</dt>
+                    <dd class="col-sm-8">#{{ order.order_number }}</dd>
+
+                    <dt class="col-sm-4">Tarehe</dt>
+                    <dd class="col-sm-8">{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</dd>
+
+                    <dt class="col-sm-4">Mnunuzi</dt>
+                    <dd class="col-sm-8">{{ order.buyer.full_name or order.buyer.phone }}<br>{{ order.buyer.phone }}</dd>
+
+                    <dt class="col-sm-4">Muuzaji</dt>
+                    <dd class="col-sm-8">{{ order.vendor.shop.name if order.vendor.shop else order.vendor.phone }}</dd>
+
+                    <dt class="col-sm-4">Anwani</dt>
+                    <dd class="col-sm-8">{{ order.delivery_address or '-' }}</dd>
+
+                    <dt class="col-sm-4">Hali</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                            {{ order.status }}
+                        </span>
+                    </dd>
+
+                    <dt class="col-sm-4">Malipo</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-{% if order.payment_status == 'paid' %}success{% else %}secondary{% endif %}">
+                            {{ order.payment_status }}
+                        </span>
+                        <small class="text-muted d-block">({{ order.payment_method }})</small>
+                    </dd>
+
+                    <dt class="col-sm-4">Jumla</dt>
+                    <dd class="col-sm-8 fw-bold">TZS {{ "{:,.0f}".format(order.total_amount) }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-list text-accent me-2"></i>Bidhaa Zilizoagizwa</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr class="border-bottom border-secondary">
+                                <th>Bidhaa</th>
+                                <th>Idadi</th>
+                                <th>Bei</th>
+                                <th>Jumla</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items %}
+                            <tr>
+                                <td>{{ item.product.name }}</td>
+                                <td>{{ item.quantity }} {{ item.product.unit }}</td>
+                                <td>TZS {{ "{:,.0f}".format(item.price_at_time) }}</td>
+                                <td>TZS {{ "{:,.0f}".format(item.subtotal) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="fw-bold">
+                                <td colspan="3" class="text-end">Jumla</td>
+                                <td>TZS {{ "{:,.0f}".format(order.total_amount) }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mt-3">
+    <a href="{{ url_for('admin.orders') }}" class="btn btn-outline-light">Rudi kwa Maagizo</a>
+</div>
+{% endblock %}

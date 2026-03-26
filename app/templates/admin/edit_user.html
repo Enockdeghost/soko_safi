@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Hariri Mtumiaji{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-edit text-accent me-2"></i>Hariri Mtumiaji: {{ user.full_name or user.phone }}</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.full_name.label(class="form-label small text-muted") }}
+                        {{ form.full_name(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.role.label(class="form-label small text-muted") }}
+                        {{ form.role(class="form-select") }}
+                    </div>
+                    <div class="mb-3 form-check">
+                        {{ form.is_active(class="form-check-input") }}
+                        {{ form.is_active.label(class="form-check-label") }}
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Hifadhi</button>
+                    <a href="{{ url_for('admin.users') }}" class="btn btn-outline-light w-100 mt-2">Ghairi</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

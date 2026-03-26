@@ -4,11 +4,12 @@ from app import db
 from app.models import (
     User, Shop, Supplier, Product, Sale, Expense,
     Voucher, VoucherRedemption, TrainingProgram, TrainingApplication,
-    GrantApplication, Notification, TransactionLog, OrderRequest
+    GrantApplication, Notification, TransactionLog, OrderRequest,
+    Order, Category                         
 )
 from app.forms import (
     VoucherForm, BulkVoucherForm, TrainingProgramForm,
-    UserEditForm, DateRangeForm
+    UserEditForm, DateRangeForm, CategoryForm     
 )
 from app.decorators import admin_required
 from app.routes import admin_bp as bp
@@ -106,10 +107,8 @@ def verify_shop(id):
         log_transaction(current_user.id, 'verify_shop', f'Verified shop {shop.id}', request.remote_addr)
         flash('Duka limethibitishwa.', 'success')
     return redirect(url_for('admin.shops'))
-
-# ----------------------------------------------------------------------
-# SUPPLIER MANAGEMENT
-# ----------------------------------------------------------------------
+    
+    
 @bp.route('/suppliers')
 @login_required
 @admin_required
@@ -135,9 +134,7 @@ def verify_supplier(id):
         flash('Msambazaji amethibitishwa.', 'success')
     return redirect(url_for('admin.suppliers'))
 
-# ----------------------------------------------------------------------
-# VOUCHER MANAGEMENT
-# ----------------------------------------------------------------------
+
 @bp.route('/vouchers', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -324,6 +321,69 @@ def edit_user(id):
         flash('Taarifa za mtumiaji zimesasishwa.', 'success')
         return redirect(url_for('admin.users'))
     return render_template('admin/edit_user.html', form=form, user=user)
+
+@bp.route('/orders')
+@login_required
+@admin_required
+def orders():
+    page = request.args.get('page', 1, type=int)
+    status = request.args.get('status', '')
+    query = Order.query.order_by(Order.created_at.desc())
+    if status:
+        query = query.filter(Order.status == status)
+    orders = query.paginate(page=page, per_page=20, error_out=False)
+    return render_template('admin/orders.html', orders=orders, current_status=status)
+
+
+@bp.route('/categories', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def categories():
+    from app.forms import CategoryForm  # we'll create this form
+    form = CategoryForm()
+    if form.validate_on_submit():
+        category = Category(name=form.name.data, slug=form.slug.data)
+        db.session.add(category)
+        db.session.commit()
+        flash('Aina imeundwa.', 'success')
+        return redirect(url_for('admin.categories'))
+    categories = Category.query.order_by(Category.name).all()
+    return render_template('admin/categories.html', form=form, categories=categories)
+
+@bp.route('/category/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_category(id):
+    category = Category.query.get_or_404(id)
+    from app.forms import CategoryForm
+    form = CategoryForm(obj=category)
+    if form.validate_on_submit():
+        category.name = form.name.data
+        category.slug = form.slug.data
+        db.session.commit()
+        flash('Aina imesasishwa.', 'success')
+        return redirect(url_for('admin.categories'))
+    return render_template('admin/edit_category.html', form=form, category=category)
+
+@bp.route('/category/<int:id>/delete')
+@login_required
+@admin_required
+def delete_category(id):
+    category = Category.query.get_or_404(id)
+    if category.products.count() > 0:
+        flash('Huwezi kufuta aina yenye bidhaa.', 'danger')
+    else:
+        db.session.delete(category)
+        db.session.commit()
+        flash('Aina imefutwa.', 'success')
+    return redirect(url_for('admin.categories'))
+
+@bp.route('/order/<int:id>')
+@login_required
+@admin_required
+def order_detail(id):
+    order = Order.query.get_or_404(id)
+    return render_template('admin/order_detail.html', order=order)
 
 # ----------------------------------------------------------------------
 # SYSTEM LOGS

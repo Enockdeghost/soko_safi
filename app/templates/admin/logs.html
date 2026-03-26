@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Rekodi za Shughuli{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4"><i class="fas fa-history text-accent me-2"></i>Rekodi za Shughuli</h2>
+
+        <!-- Search / Filter Form -->
+        <div class="card border-0 bg-primary-card shadow-sm mb-4">
+            <div class="card-body">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted">Mtumiaji (Simu au Jina)</label>
+                        <input type="text" name="user" class="form-control" value="{{ request.args.get('user', '') }}" placeholder="0712 345 678">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted">Kitendo</label>
+                        <input type="text" name="action" class="form-control" value="{{ request.args.get('action', '') }}" placeholder="e.g., login, add_product">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success w-100"><i class="fas fa-search me-2"></i>Chuja</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Logs Table -->
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle">
+                        <thead>
+                            <tr class="border-bottom border-secondary">
+                                <th>Mtumiaji</th>
+                                <th>Kitendo</th>
+                                <th>Maelezo</th>
+                                <th>Anwani ya IP</th>
+                                <th>Muda</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs.items %}
+                            <tr>
+                                <td>{{ log.user.full_name or log.user.phone }}</td>
+                                <td><span class="badge bg-secondary">{{ log.action }}</span></td>
+                                <td>{{ log.details|truncate(60) }}</td>
+                                <td>{{ log.ip_address or '-' }}</td>
+                                <td>{{ log.timestamp.strftime('%d/%m/%Y %H:%M') }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Hakuna rekodi zilizopatikana.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if logs.pages > 1 %}
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if logs.has_prev %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.logs', page=logs.prev_num, **request.args) }}">«</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">«</span></li>
+                        {% endif %}
+
+                        {% for page_num in logs.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                            {% if page_num %}
+                                {% if page_num == logs.page %}
+                                <li class="page-item active"><span class="page-link bg-success border-success">{{ page_num }}</span></li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.logs', page=page_num, **request.args) }}">{{ page_num }}</a></li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">…</span></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if logs.has_next %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.logs', page=logs.next_num, **request.args) }}">»</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">»</span></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

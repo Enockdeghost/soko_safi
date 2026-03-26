@@ -1,29 +1,30 @@
 {% extends "base.html" %}
 {% block title %}Vocha{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-md-5">
-        <div class="card shadow">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Unda Vocha Mpya</h5>
+        <div class="card border-0 bg-primary-card shadow-sm mb-4">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-plus-circle text-accent me-2"></i>Unda Vocha Mpya</h5>
             </div>
             <div class="card-body">
                 <form method="POST">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">
-                        {{ form.amount.label(class="form-label") }}
+                        {{ form.amount.label(class="form-label small text-muted") }}
                         {{ form.amount(class="form-control") }}
                     </div>
                     <div class="mb-3">
-                        {{ form.beneficiary_name.label(class="form-label") }}
+                        {{ form.beneficiary_name.label(class="form-label small text-muted") }}
                         {{ form.beneficiary_name(class="form-control") }}
                     </div>
                     <div class="mb-3">
-                        {{ form.beneficiary_phone.label(class="form-label") }}
+                        {{ form.beneficiary_phone.label(class="form-label small text-muted") }}
                         {{ form.beneficiary_phone(class="form-control") }}
                     </div>
                     <div class="mb-3">
-                        {{ form.expiry_date.label(class="form-label") }}
+                        {{ form.expiry_date.label(class="form-label small text-muted") }}
                         {{ form.expiry_date(class="form-control", type="date") }}
                     </div>
                     <button type="submit" class="btn btn-success w-100">Unda</button>
@@ -34,49 +35,76 @@
         </div>
     </div>
     <div class="col-md-7">
-        <div class="card shadow">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Vocha Zilizopo</h5>
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-list text-accent me-2"></i>Vocha Zilizopo</h5>
             </div>
             <div class="card-body">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Code</th>
-                            <th>Kiasi</th>
-                            <th>Mnufaika</th>
-                            <th>Hali</th>
-                            <th>Muda</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for v in vouchers.items %}
-                        <tr>
-                            <td>{{ v.code }}</td>
-                            <td>TZS {{ "{:,.0f}".format(v.amount) }}</td>
-                            <td>{{ v.beneficiary_name or '-' }}</td>
-                            <td>
-                                {% if v.status == 'active' %}
-                                    <span class="badge bg-success">Inatumika</span>
-                                {% elif v.status == 'redeemed' %}
-                                    <span class="badge bg-info">Imetumika</span>
-                                {% elif v.status == 'expired' %}
-                                    <span class="badge bg-secondary">Imeisha</span>
-                                {% else %}
-                                    <span class="badge bg-danger">Imebatilishwa</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ v.created_at.strftime('%d/%m') }}</td>
-                            <td>
-                                {% if v.status == 'active' %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr class="border-bottom border-secondary">
+                                <th>Code</th>
+                                <th>Kiasi</th>
+                                <th>Mnufaika</th>
+                                <th>Hali</th>
+                                <th>Muda</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for v in vouchers.items %}
+                            <tr>
+                                <td><code>{{ v.code }}</code></td>
+                                <td>TZS {{ "{:,.0f}".format(v.amount) }}</td>
+                                <td>{{ v.beneficiary_name or '-' }}</td>
+                                <td>
+                                    <span class="badge bg-{% if v.status == 'active' %}success{% elif v.status == 'redeemed' %}info{% elif v.status == 'expired' %}secondary{% else %}danger{% endif %}">
+                                        {{ v.status }}
+                                    </span>
+                                </td>
+                                <td>{{ v.created_at.strftime('%d/%m') }}</td>
+                                <td>
+                                    {% if v.status == 'active' %}
                                     <a href="{{ url_for('admin.revoke_voucher', id=v.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Batilisha?')">Batilisha</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if vouchers.pages > 1 %}
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if vouchers.has_prev %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.vouchers', page=vouchers.prev_num) }}">«</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">«</span></li>
+                        {% endif %}
+
+                        {% for page_num in vouchers.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                            {% if page_num %}
+                                {% if page_num == vouchers.page %}
+                                <li class="page-item active"><span class="page-link bg-success border-success">{{ page_num }}</span></li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.vouchers', page=page_num) }}">{{ page_num }}</a></li>
                                 {% endif %}
-                            </td>
-                        </tr>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">…</span></li>
+                            {% endif %}
                         {% endfor %}
-                    </tbody>
-                </table>
+
+                        {% if vouchers.has_next %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.vouchers', page=vouchers.next_num) }}">»</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">»</span></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
             </div>
         </div>
     </div>

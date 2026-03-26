@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Ruzuku{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-gift text-accent me-2"></i>Maombi ya Ruzuku</h2>
+
+<div class="card border-0 bg-primary-card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr class="border-bottom border-secondary">
+                        <th>Muuzaji</th>
+                        <th>Kiasi</th>
+                        <th>Sababu</th>
+                        <th>Tarehe</th>
+                        <th>Hali</th>
+                        <th>Hatua</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for g in grants.items %}
+                    <tr>
+                        <td>{{ g.vendor.full_name or g.vendor.phone }}</td>
+                        <td>TZS {{ "{:,.0f}".format(g.amount_requested) }}</td>
+                        <td>{{ g.purpose|truncate(40) }}</td>
+                        <td>{{ g.applied_at.strftime('%d/%m/%Y') }}</td>
+                        <td>
+                            <span class="badge bg-{% if g.status == 'pending' %}warning{% elif g.status == 'approved' %}success{% else %}danger{% endif %}">
+                                {{ g.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if g.status == 'pending' %}
+                            <a href="{{ url_for('admin.handle_grant', id=g.id, action='approve') }}" class="btn btn-sm btn-success">Kubali</a>
+                            <a href="{{ url_for('admin.handle_grant', id=g.id, action='reject') }}" class="btn btn-sm btn-danger">Kataa</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if grants.pages > 1 %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if grants.has_prev %}
+                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.grants', page=grants.prev_num) }}">«</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">«</span></li>
+                {% endif %}
+
+                {% for page_num in grants.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num == grants.page %}
+                        <li class="page-item active"><span class="page-link bg-success border-success">{{ page_num }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.grants', page=page_num) }}">{{ page_num }}</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">…</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if grants.has_next %}
+                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.grants', page=grants.next_num) }}">»</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">»</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

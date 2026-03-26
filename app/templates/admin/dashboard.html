@@ -6,59 +6,85 @@
     <div class="row g-4">
 
         <!-- Sidebar Navigation - Left Side (Sticky) -->
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-xl-2">
             <div class="card border-0 bg-primary-card shadow-sm sticky-top" style="top: 80px;">
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush bg-transparent">
+
                         <a href="{{ url_for('admin.dashboard') }}" 
                            class="list-group-item list-group-item-action bg-transparent text-light active border-0 d-flex align-items-center py-3">
                             <i class="fas fa-tachometer-alt me-3"></i>
-                            Dashibodi
+                            <span>Dashibodi</span>
                         </a>
+
                         <a href="{{ url_for('admin.users') }}" 
                            class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
                             <i class="fas fa-users me-3"></i>
-                            Watumiaji Wote
+                            <span>Watumiaji Wote</span>
                         </a>
+
                         <a href="{{ url_for('admin.vendors') }}" 
                            class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
                             <i class="fas fa-store me-3"></i>
-                            Wafanyabiashara
+                            <span>Wafanyabiashara</span>
                         </a>
+
                         <a href="{{ url_for('admin.shops') }}" 
                            class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
                             <i class="fas fa-shop me-3"></i>
-                            Maduka
+                            <span>Maduka</span>
                         </a>
+
                         <a href="{{ url_for('admin.suppliers') }}" 
                            class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
                             <i class="fas fa-truck me-3"></i>
-                            Wasambazaji
+                            <span>Wasambazaji</span>
                         </a>
+
+                        <div class="dropdown-divider bg-light opacity-25 mx-3 my-2"></div>
+
                         <a href="{{ url_for('admin.vouchers') }}" 
                            class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
                             <i class="fas fa-ticket-alt me-3"></i>
-                            Vocha
+                            <span>Vocha</span>
                         </a>
+
                         <a href="{{ url_for('admin.trainings') }}" 
                            class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
                             <i class="fas fa-chalkboard-teacher me-3"></i>
-                            Mafunzo
+                            <span>Mafunzo</span>
                         </a>
+
                         <a href="{{ url_for('admin.grants') }}" 
                            class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
                             <i class="fas fa-gift me-3"></i>
-                            Ruzuku
+                            <span>Ruzuku</span>
                         </a>
+
+                        <a href="{{ url_for('admin.orders') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-clipboard-list me-3"></i>
+                            <span>Maagizo Yote</span>
+                        </a>
+
+                        <a href="{{ url_for('admin.categories') }}" 
+                           class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
+                            <i class="fas fa-tags me-3"></i>
+                            <span>Aina za Bidhaa</span>
+                        </a>
+
+                        <div class="dropdown-divider bg-light opacity-25 mx-3 my-2"></div>
+
                         <a href="{{ url_for('admin.logs') }}" 
                            class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
                             <i class="fas fa-history me-3"></i>
-                            Rekodi za Shughuli
+                            <span>Rekodi za Shughuli</span>
                         </a>
+
                         <a href="{{ url_for('admin.reports') }}" 
                            class="list-group-item list-group-item-action bg-transparent text-light border-0 d-flex align-items-center py-3">
                             <i class="fas fa-chart-bar me-3"></i>
-                            Ripoti za Mfumo
+                            <span>Ripoti za Mfumo</span>
                         </a>
                     </div>
                 </div>
@@ -66,11 +92,11 @@
         </div>
 
         <!-- Main Content -->
-        <div class="col-lg-9">
+        <div class="col-lg-9 col-xl-10">
 
             <!-- Summary Cards -->
-            <div class="row g-4 mb-4">
-                <div class="col-md-3">
+            <div class="row g-4 mb-5">
+                <div class="col-md-3 col-sm-6">
                     <div class="card border-0 bg-primary-card shadow-sm h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
@@ -86,7 +112,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-6">
                     <div class="card border-0 bg-primary-card shadow-sm h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
@@ -102,7 +128,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-6">
                     <div class="card border-0 bg-primary-card shadow-sm h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
@@ -118,7 +144,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-6">
                     <div class="card border-0 bg-primary-card shadow-sm h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
@@ -137,7 +163,7 @@
 
             <!-- Pending Items Table -->
             <div class="card border-0 bg-primary-card shadow-sm mb-4">
-                <div class="card-header bg-transparent border-0 pt-3">
+                <div class="card-header bg-transparent border-0 pt-3 pb-2">
                     <h5 class="fw-semibold mb-0">
                         <i class="fas fa-clock text-accent me-2"></i>
                         Mambo Yanayosubiri Uthibitishaji
@@ -145,22 +171,22 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
+                        <table class="table table-sm table-hover align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Aina</th>
+                                    <th class="ps-4">Aina</th>
                                     <th>Jina / Taarifa</th>
                                     <th>Tarehe</th>
-                                    <th>Hatua</th>
+                                    <th class="text-end pe-4">Hatua</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for shop in pending_shops_list %}
                                 <tr>
-                                    <td><span class="badge bg-info">Duka</span></td>
-                                    <td>{{ shop.name }} ({{ shop.vendor.full_name }})</td>
+                                    <td class="ps-4"><span class="badge bg-info">Duka</span></td>
+                                    <td class="fw-medium">{{ shop.name }} <small class="text-muted">({{ shop.vendor.full_name }})</small></td>
                                     <td>{{ shop.created_at.strftime('%d/%m/%Y') }}</td>
-                                    <td>
+                                    <td class="text-end pe-4">
                                         <a href="{{ url_for('admin.verify_shop', id=shop.id) }}" 
                                            class="btn btn-sm btn-success">Thibitisha</a>
                                     </td>
@@ -169,10 +195,10 @@
 
                                 {% for supplier in pending_suppliers_list %}
                                 <tr>
-                                    <td><span class="badge bg-warning">Msambazaji</span></td>
-                                    <td>{{ supplier.business_name }} ({{ supplier.user.full_name }})</td>
+                                    <td class="ps-4"><span class="badge bg-warning">Msambazaji</span></td>
+                                    <td class="fw-medium">{{ supplier.business_name }} <small class="text-muted">({{ supplier.user.full_name }})</small></td>
                                     <td>{{ supplier.user.created_at.strftime('%d/%m/%Y') }}</td>
-                                    <td>
+                                    <td class="text-end pe-4">
                                         <a href="{{ url_for('admin.verify_supplier', id=supplier.id) }}" 
                                            class="btn btn-sm btn-success">Thibitisha</a>
                                     </td>
@@ -181,10 +207,10 @@
 
                                 {% for grant in pending_grants_list %}
                                 <tr>
-                                    <td><span class="badge bg-danger">Ruzuku</span></td>
-                                    <td>{{ grant.vendor.full_name }} - TZS {{ "{:,.0f}".format(grant.amount_requested) }}</td>
+                                    <td class="ps-4"><span class="badge bg-danger">Ruzuku</span></td>
+                                    <td class="fw-medium">{{ grant.vendor.full_name }} - TZS {{ "{:,.0f}".format(grant.amount_requested) }}</td>
                                     <td>{{ grant.applied_at.strftime('%d/%m/%Y') }}</td>
-                                    <td>
+                                    <td class="text-end pe-4">
                                         <a href="{{ url_for('admin.grants') }}" 
                                            class="btn btn-sm btn-outline-success">Kagua</a>
                                     </td>
@@ -195,8 +221,9 @@
                     </div>
 
                     {% if not pending_shops_list and not pending_suppliers_list and not pending_grants_list %}
-                    <div class="text-center py-5">
-                        <p class="text-muted mb-0">Hakuna mambo yanayosubiri kwa sasa.</p>
+                    <div class="text-center py-5 text-muted">
+                        <i class="fas fa-check-circle fa-3x mb-3 opacity-50"></i>
+                        <p class="mb-0">Hakuna mambo yanayosubiri kwa sasa.</p>
                     </div>
                     {% endif %}
                 </div>
@@ -204,7 +231,7 @@
 
             <!-- Recent Activity Logs -->
             <div class="card border-0 bg-primary-card shadow-sm">
-                <div class="card-header bg-transparent border-0 pt-3">
+                <div class="card-header bg-transparent border-0 pt-3 pb-2">
                     <h5 class="fw-semibold mb-0">
                         <i class="fas fa-history text-accent me-2"></i>
                         Shughuli za Hivi Karibuni
@@ -212,27 +239,28 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
+                        <table class="table table-sm table-hover align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Mtumiaji</th>
+                                    <th class="ps-4">Mtumiaji</th>
                                     <th>Kitendo</th>
                                     <th>Maelezo</th>
-                                    <th>Muda</th>
+                                    <th class="text-end pe-4">Muda</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for log in recent_logs %}
                                 <tr>
-                                    <td>{{ log.user.full_name or log.user.phone }}</td>
+                                    <td class="ps-4 fw-medium">{{ log.user.full_name or log.user.phone }}</td>
                                     <td><span class="badge bg-secondary">{{ log.action }}</span></td>
-                                    <td>{{ log.details|truncate(45) }}</td>
-                                    <td>{{ log.timestamp.strftime('%d/%m/%Y %H:%M') }}</td>
+                                    <td class="text-muted">{{ log.details|truncate(50) }}</td>
+                                    <td class="text-end pe-4 text-muted small">{{ log.timestamp.strftime('%d/%m/%Y %H:%M') }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
+
                     <div class="card-footer bg-transparent border-0 pt-3">
                         <a href="{{ url_for('admin.logs') }}" class="btn btn-sm btn-outline-success">
                             Angalia zote <i class="fas fa-arrow-right ms-1"></i>

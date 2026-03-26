@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Aina za Bidhaa{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-plus-circle text-accent me-2"></i>Ongeza Aina Mpya</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.name.label(class="form-label small text-muted") }}
+                        {{ form.name(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.slug.label(class="form-label small text-muted") }}
+                        {{ form.slug(class="form-control") }}
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Hifadhi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-list text-accent me-2"></i>Aina Zilizopo</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr class="border-bottom border-secondary">
+                                <th>Jina</th>
+                                <th>Slug</th>
+                                <th>Bidhaa</th>
+                                <th></th>
+                             </tr>
+                        </thead>
+                        <tbody>
+                            {% for cat in categories %}
+                             <tr>
+                                <td>{{ cat.name }}</td>
+                                <td>{{ cat.slug }}</td>
+                                <td>{{ cat.products.count() }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.edit_category', id=cat.id) }}" class="btn btn-sm btn-outline-success">Hariri</a>
+                                    {% if cat.products.count() == 0 %}
+                                    <a href="{{ url_for('admin.delete_category', id=cat.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Futa?')">Futa</a>
+                                    {% endif %}
+                                </td>
+                             </tr>
+                            {% endfor %}
+                        </tbody>
+                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

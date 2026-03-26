@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Mafunzo{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="card border-0 bg-primary-card shadow-sm mb-4">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-plus-circle text-accent me-2"></i>Unda Mafunzo Mapya</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.title.label(class="form-label small text-muted") }}
+                        {{ form.title(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label small text-muted") }}
+                        {{ form.description(class="form-control", rows=3) }}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.start_date.label(class="form-label small text-muted") }}
+                            {{ form.start_date(class="form-control", type="date") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.end_date.label(class="form-label small text-muted") }}
+                            {{ form.end_date(class="form-control", type="date") }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.capacity.label(class="form-label small text-muted") }}
+                        {{ form.capacity(class="form-control") }}
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Unda</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-list text-accent me-2"></i>Mafunzo Yaliyopo</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr class="border-bottom border-secondary">
+                                <th>Jina</th>
+                                <th>Kuanza</th>
+                                <th>Maliza</th>
+                                <th>Nafasi</th>
+                                <th>Waombaji</th>
+                                <th>Hatua</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for prog in programs %}
+                            <tr>
+                                <td>{{ prog.title }}</td>
+                                <td>{{ prog.start_date.strftime('%d/%m/%Y') }}</td>
+                                <td>{{ prog.end_date.strftime('%d/%m/%Y') }}</td>
+                                <td>{{ prog.capacity }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.training_applicants', id=prog.id) }}" class="btn btn-sm btn-outline-info">
+                                        {{ prog.applications.count() }} waombaji
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('admin.training_applicants', id=prog.id) }}" class="btn btn-sm btn-outline-success">Kagua</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

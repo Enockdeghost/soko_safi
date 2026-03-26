@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ vendor.full_name or vendor.phone }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-user-circle fa-4x text-accent mb-3"></i>
+                <h4>{{ vendor.full_name or vendor.phone }}</h4>
+                <p class="text-muted">{{ vendor.phone }}</p>
+                <p><span class="badge bg-{% if vendor.is_active %}success{% else %}danger{% endif %}">
+                    {% if vendor.is_active %}Akaunti Inatumika{% else %}Akaunti Imesitishwa{% endif %}
+                </span></p>
+                <a href="{{ url_for('admin.toggle_vendor_active', id=vendor.id) }}" class="btn btn-sm btn-outline-{% if vendor.is_active %}danger{% else %}success{% endif %} mt-2">
+                    {% if vendor.is_active %}Zima Akaunti{% else %}Washa Akaunti{% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card border-0 bg-primary-card shadow-sm mb-4">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-store text-accent me-2"></i>Taarifa za Duka</h5>
+            </div>
+            <div class="card-body">
+                {% if shop %}
+                <p><strong>Jina la Duka:</strong> {{ shop.name }}</p>
+                <p><strong>Mahali:</strong> {{ shop.location }}</p>
+                <p><strong>Aina ya Biashara:</strong> {{ shop.category }}</p>
+                <p><strong>Hali ya Uthibitishaji:</strong>
+                    {% if shop.verified %}
+                    <span class="badge bg-success">Imethibitishwa</span>
+                    {% else %}
+                    <span class="badge bg-warning">Haijathibitishwa</span>
+                    <a href="{{ url_for('admin.verify_shop', id=shop.id) }}" class="btn btn-sm btn-success ms-2">Thibitisha</a>
+                    {% endif %}
+                </p>
+                <p><strong>Idadi ya Bidhaa:</strong> {{ products }}</p>
+                <p><strong>Jumla ya Mauzo:</strong> TZS {{ "{:,.0f}".format(sales_total) }}</p>
+                {% else %}
+                <p class="text-muted">Muuzaji huyu hana duka bado.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

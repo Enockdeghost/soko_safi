@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Maduka{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-shop text-accent me-2"></i>Maduka</h2>
+
+<div class="card border-0 bg-primary-card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr class="border-bottom border-secondary">
+                        <th>Jina la Duka</th>
+                        <th>Muuzaji</th>
+                        <th>Mahali</th>
+                        <th>Hali</th>
+                        <th>Tarehe</th>
+                        <th>Hatua</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for shop in shops.items %}
+                    <tr>
+                        <td>{{ shop.name }}</td>
+                        <td>{{ shop.vendor.full_name or shop.vendor.phone }}</td>
+                        <td>{{ shop.location }}</td>
+                        <td>
+                            <span class="badge bg-{% if shop.verified %}success{% else %}warning{% endif %}">
+                                {% if shop.verified %}Imethibitishwa{% else %}Haijathibitishwa{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ shop.created_at.strftime('%d/%m/%Y') }}</td>
+                        <td>
+                            {% if not shop.verified %}
+                            <a href="{{ url_for('admin.verify_shop', id=shop.id) }}" class="btn btn-sm btn-success">Thibitisha</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if shops.pages > 1 %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if shops.has_prev %}
+                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.shops', page=shops.prev_num) }}">«</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">«</span></li>
+                {% endif %}
+
+                {% for page_num in shops.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num == shops.page %}
+                        <li class="page-item active"><span class="page-link bg-success border-success">{{ page_num }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.shops', page=page_num) }}">{{ page_num }}</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">…</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if shops.has_next %}
+                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.shops', page=shops.next_num) }}">»</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">»</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

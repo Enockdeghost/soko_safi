@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Wasambazaji{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-truck text-accent me-2"></i>Wasambazaji</h2>
+
+<div class="card border-0 bg-primary-card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr class="border-bottom border-secondary">
+                        <th>Jina la Biashara</th>
+                        <th>Muuzaji</th>
+                        <th>Mahali</th>
+                        <th>Hali</th>
+                        <th>Tarehe ya Kujiunga</th>
+                        <th>Hatua</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for supplier in suppliers.items %}
+                    <tr>
+                        <td>{{ supplier.business_name }}</td>
+                        <td>{{ supplier.user.full_name or supplier.user.phone }}</td>
+                        <td>{{ supplier.location or '-' }}</td>
+                        <td>
+                            <span class="badge bg-{% if supplier.verified %}success{% else %}warning{% endif %}">
+                                {% if supplier.verified %}Imethibitishwa{% else %}Haijathibitishwa{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ supplier.user.created_at.strftime('%d/%m/%Y') }}</td>
+                        <td>
+                            {% if not supplier.verified %}
+                            <a href="{{ url_for('admin.verify_supplier', id=supplier.id) }}" class="btn btn-sm btn-success">Thibitisha</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if suppliers.pages > 1 %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if suppliers.has_prev %}
+                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.suppliers', page=suppliers.prev_num) }}">«</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">«</span></li>
+                {% endif %}
+
+                {% for page_num in suppliers.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num == suppliers.page %}
+                        <li class="page-item active"><span class="page-link bg-success border-success">{{ page_num }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.suppliers', page=page_num) }}">{{ page_num }}</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">…</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if suppliers.has_next %}
+                <li class="page-item"><a class="page-link bg-primary-card border-secondary" href="{{ url_for('admin.suppliers', page=suppliers.next_num) }}">»</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link bg-primary-card border-secondary">»</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
