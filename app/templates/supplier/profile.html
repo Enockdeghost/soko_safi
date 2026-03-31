@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Wasifu wa Msambazaji{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3 mb-4">
+        <div class="card border-0 bg-primary-card shadow-sm sticky-top" style="top: 80px;">
+            <div class="card-body p-0">
+                {% include 'supplier/_sidebar.html' %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-user-circle text-accent me-2"></i>Wasifu Wako</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.business_name.label(class="form-label small text-muted") }}
+                        {{ form.business_name(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.contact_phone.label(class="form-label small text-muted") }}
+                        {{ form.contact_phone(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.location.label(class="form-label small text-muted") }}
+                        {{ form.location(class="form-control") }}
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Hifadhi</button>
+                </form>
+                {% if not supplier.verified %}
+                <div class="alert alert-warning mt-3">Akaunti yako inasubiri kuthibitishwa na msimamizi.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -8,9 +8,7 @@ from sqlalchemy import func
 import secrets
 import hmac
 
-# ----------------------------------------------------------------------
 # Authentication for offline sync (token-based)
-# ----------------------------------------------------------------------
 def authenticate_token():
     """Extract and validate API token from header."""
     auth_header = request.headers.get('Authorization')
@@ -29,9 +27,7 @@ def authenticate_token():
 #     def generate_api_token(self):
 #         self.api_token = secrets.token_urlsafe(32)
 
-# ----------------------------------------------------------------------
 # Helper: resolve conflicts using timestamps
-# ----------------------------------------------------------------------
 def resolve_sale_conflict(local_sale, server_sale):
     """Return True if local_sale is newer and should replace server_sale."""
     if not server_sale:
@@ -40,9 +36,7 @@ def resolve_sale_conflict(local_sale, server_sale):
     local_time = datetime.fromisoformat(local_sale['timestamp'])
     return local_time > server_sale.timestamp
 
-# ----------------------------------------------------------------------
 # SYNC ENDPOINT (with conflict resolution)
-# ----------------------------------------------------------------------
 @bp.route('/sync', methods=['POST'])
 def sync():
     """
@@ -73,9 +67,7 @@ def sync():
         'conflicts': []
     }
 
-    # --------------------------------------------------------------
     # Process sales
-    # --------------------------------------------------------------
     for sale_data in data.get('sales', []):
         try:
             # Basic validation
@@ -125,9 +117,7 @@ def sync():
         except Exception as e:
             response['conflicts'].append({'type': 'sale', 'data': sale_data, 'reason': str(e)})
 
-    # --------------------------------------------------------------
     # Process expenses
-    # --------------------------------------------------------------
     for exp_data in data.get('expenses', []):
         try:
             required = ['category_id', 'amount', 'date']
@@ -172,9 +162,7 @@ def sync():
         except Exception as e:
             response['conflicts'].append({'type': 'expense', 'data': exp_data, 'reason': str(e)})
 
-    # --------------------------------------------------------------
-    # Process product updates (e.g., price changes, stock adjustments)
-    # --------------------------------------------------------------
+
     for prod_data in data.get('products', []):
         try:
             required = ['id', 'name', 'price', 'quantity']
@@ -207,9 +195,7 @@ def sync():
     db.session.commit()
     return jsonify(response)
 
-# ----------------------------------------------------------------------
-# GET PRODUCTS for offline catalog (by shop_id)
-# ----------------------------------------------------------------------
+
 @bp.route('/products/<int:shop_id>', methods=['GET'])
 def get_products(shop_id):
     """Return all products of a given shop (public)."""
@@ -224,9 +210,7 @@ def get_products(shop_id):
         'updated_at': p.updated_at.isoformat()
     } for p in products])
 
-# ----------------------------------------------------------------------
-# GET expense categories for a vendor
-# ----------------------------------------------------------------------
+
 @bp.route('/expense-categories', methods=['GET'])
 @login_required
 def get_expense_categories():
@@ -239,9 +223,7 @@ def get_expense_categories():
     cats = ExpenseCategory.query.filter_by(shop_id=shop.id).all()
     return jsonify([{'id': c.id, 'name': c.name} for c in cats])
 
-# ----------------------------------------------------------------------
-# MOBILE MONEY STUB (charge)
-# ----------------------------------------------------------------------
+
 @bp.route('/mobile-money/charge', methods=['POST'])
 def mobile_money_charge():
     """
@@ -271,9 +253,7 @@ def mobile_money_charge():
     else:
         return jsonify({'success': False, 'message': 'Payment failed'}), 500
 
-# ----------------------------------------------------------------------
-# VOUCHER REDEMPTION via API (for POS)
-# ----------------------------------------------------------------------
+
 @bp.route('/vouchers/redeem', methods=['POST'])
 @login_required
 def redeem_voucher_api():
@@ -302,9 +282,7 @@ def redeem_voucher_api():
         'beneficiary': voucher.beneficiary_name
     })
 
-# ----------------------------------------------------------------------
-# DASHBOARD DATA for vendors
-# ----------------------------------------------------------------------
+
 @bp.route('/dashboard/vendor')
 @login_required
 def vendor_dashboard_data():
@@ -342,9 +320,7 @@ def vendor_dashboard_data():
         'top_products': [{'name': p.name, 'quantity': p.qty} for p in top_products]
     })
 
-# ----------------------------------------------------------------------
-# DASHBOARD DATA for suppliers
-# ----------------------------------------------------------------------
+
 @bp.route('/dashboard/supplier')
 @login_required
 def supplier_dashboard_data():
@@ -375,9 +351,7 @@ def supplier_dashboard_data():
         'status_counts': {s: c for s, c in status_counts}
     })
 
-# ----------------------------------------------------------------------
-# GET NOTIFICATIONS for current user
-# ----------------------------------------------------------------------
+
 @bp.route('/notifications')
 @login_required
 def get_notifications():

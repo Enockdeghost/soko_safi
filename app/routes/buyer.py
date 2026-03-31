@@ -3,18 +3,18 @@ from flask_login import login_required, current_user
 from app.extensions import db
 from app.models import (
     User, Shop, Product, Cart, Order, OrderItem, Review, Wishlist,
-    BuyerProfile, Promotion
+    BuyerProfile, Promotion, Notification, Category
 )
 from app.decorators import buyer_required
 from app.routes import buyer_bp as bp
 from app.utils import send_sms, create_notification, log_transaction
 from datetime import datetime
+from sqlalchemy import func
 import secrets
 
 def _get_buyer_profile():
     """Helper to retrieve or create a buyer profile, handling list vs. single object."""
     profile = current_user.buyer_profile
-    # If it's a list, take the first element or create new
     if isinstance(profile, list):
         if profile:
             profile = profile[0]
@@ -33,9 +33,85 @@ def _get_buyer_profile():
 @buyer_required
 def dashboard():
     profile = _get_buyer_profile()
-    recent_orders = Order.query.filter_by(buyer_id=current_user.id).order_by(Order.created_at.desc()).limit(5).all()
+    points = profile.loyalty_points
+
+    # Recent orders (limit 5)
+    recent_orders = Order.query.filter_by(buyer_id=current_user.id)\
+                        .order_by(Order.created_at.desc()).limit(5).all()
+
+    # Wishlist items
     wishlist = Wishlist.query.filter_by(buyer_id=current_user.id).all()
-    return render_template('buyer/dashboard.html', orders=recent_orders, wishlist=wishlist, points=profile.loyalty_points)
+
+    # Order counts by status
+    order_counts = db.session.query(Order.status, func.count(Order.id))\
+                    .filter(Order.buyer_id == current_user.id)\
+                    .group_by(Order.status).all()
+    order_stats = {status: count for status, count in order_counts}
+
+    # Activity feed: combine last 3 orders and unread notifications
+    activities = []
+    latest_orders = Order.query.filter_by(buyer_id=current_user.id)\
+                        .order_by(Order.created_at.desc()).limit(3).all()
+    for o in latest_orders:
+        activities.append({
+            'type': 'order',
+            'message': f"Agizo #{o.order_number} limewekwa",
+            'time': o.created_at,
+            'status': o.status
+        })
+    notifs = Notification.query.filter_by(user_id=current_user.id, is_read=False)\
+                        .order_by(Notification.created_at.desc()).limit(3).all()
+    for n in notifs:
+        activities.append({
+            'type': 'notification',
+            'message': n.message,
+            'time': n.created_at
+        })
+    activities.sort(key=lambda x: x['time'], reverse=True)
+    activities = activities[:5]
+
+    # Recommendations based on purchase history
+    recommended = []
+    last_orders_ids = [o.id for o in latest_orders]
+    if last_orders_ids:
+        category_ids = db.session.query(Product.category_id)\
+                        .join(OrderItem)\
+                        .filter(OrderItem.order_id.in_(last_orders_ids))\
+                        .filter(Product.category_id != None)\
+                        .distinct().all()
+        category_ids = [c[0] for c in category_ids]
+        if category_ids:
+            recommended = Product.query.filter(
+                Product.category_id.in_(category_ids),
+                Product.is_active == True,
+                Product.quantity > 0
+            ).order_by(func.random()).limit(6).all()
+    if len(recommended) < 6:
+        top_products = db.session.query(Product)\
+                        .join(OrderItem)\
+                        .group_by(Product.id)\
+                        .order_by(func.sum(OrderItem.quantity).desc())\
+                        .limit(6 - len(recommended)).all()
+        for p in top_products:
+            if p not in recommended:
+                recommended.append(p)
+
+    # Active promotions (for all or specific vendors – here we show all active)
+    now = datetime.utcnow()
+    promotions = Promotion.query.filter(
+        Promotion.start_date <= now,
+        Promotion.end_date >= now,
+        Promotion.is_active == True
+    ).limit(3).all()
+
+    return render_template('buyer/dashboard.html',
+                           orders=recent_orders,
+                           wishlist=wishlist,
+                           points=points,
+                           order_stats=order_stats,
+                           activities=activities,
+                           recommended=recommended,
+                           promotions=promotions)
 
 @bp.route('/catalog')
 def catalog():
@@ -204,6 +280,13 @@ def review_order(id):
         return redirect(url_for('buyer.order_detail', id=id))
 
     return render_template('buyer/review.html', order=order)
+
+@bp.route('/wishlist')
+@login_required
+@buyer_required
+def wishlist():
+    wishlist_items = Wishlist.query.filter_by(buyer_id=current_user.id).all()
+    return render_template('buyer/wishlist.html', wishlist=wishlist_items)
 
 @bp.route('/wishlist/toggle/<int:product_id>')
 @login_required

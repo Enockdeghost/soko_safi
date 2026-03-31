@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Takwimu za Msambazaji{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3 mb-4">
+        <div class="card border-0 bg-primary-card shadow-sm sticky-top" style="top: 80px;">
+            <div class="card-body p-0">
+                {% include 'supplier/_sidebar.html' %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <h2 class="mb-4"><i class="fas fa-chart-line text-accent me-2"></i>Takwimu za Msambazaji</h2>
+
+        <!-- Top requested products -->
+        <div class="card border-0 bg-primary-card shadow-sm mb-4">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-chart-simple text-accent me-2"></i>Bidhaa Zinazohitajika Sana</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="topProductsChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Monthly orders -->
+        <div class="card border-0 bg-primary-card shadow-sm mb-4">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-calendar-alt text-accent me-2"></i>Maagizo kwa Mwezi</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="monthlyChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Top vendors -->
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-semibold"><i class="fas fa-users text-accent me-2"></i>Wauzaji Wanaoomba Zaidi</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr class="border-bottom border-secondary">
+                                <th>Jina</th>
+                                <th>Simu</th>
+                                <th>Idadi ya Maagizo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for v in top_vendors %}
+                            <tr>
+                                <td>{{ v.full_name or '-' }}</td>
+                                <td>{{ v.phone }}</td>
+                                <td>{{ v.order_count }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="3" class="text-center">Hakuna data bado.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Top products chart
+    const prodLabels = {{ top_requests|map(attribute='product_name')|list|tojson }};
+    const prodData = {{ top_requests|map(attribute='total_qty')|list|tojson }};
+    if (prodLabels.length && prodData.length) {
+        new Chart(document.getElementById('topProductsChart'), {
+            type: 'bar',
+            data: {
+                labels: prodLabels,
+                datasets: [{
+                    label: 'Jumla ya Idadi Iliyoombwa',
+                    data: prodData,
+                    backgroundColor: '#00a86b'
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    // Monthly chart
+    const months = {{ months|tojson }};
+    const monthlyCounts = {{ monthly_counts|tojson }};
+    if (months.length && monthlyCounts.length) {
+        new Chart(document.getElementById('monthlyChart'), {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Idadi ya Maagizo',
+                    data: monthlyCounts,
+                    borderColor: '#00a86b',
+                    tension: 0.2,
+                    fill: false
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+</script>
+{% endblock %}

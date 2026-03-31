@@ -1,21 +1,39 @@
 {% extends "base.html" %}
 {% block title %}Bidhaa Zote{% endblock %}
+
 {% block content %}
-<h2 class="mb-4"><i class="fas fa-store text-accent me-2"></i>Bidhaa Zote</h2>
-<div class="row">
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-store text-accent me-2"></i>Bidhaa Zote</h2>
+    <div class="text-muted">{{ products|length }} bidhaa</div>
+</div>
+
+<div class="row g-4">
     {% for product in products %}
-    <div class="col-md-4 col-lg-3 mb-4">
-        <div class="card h-100 border-0 bg-primary-card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">{{ product.name }}</h5>
-                <p class="text-muted small">{{ product.shop.name }}</p>
-                <p class="fw-bold text-accent">TZS {{ "{:,.0f}".format(product.price) }}/{{ product.unit }}</p>
-                <p class="small">Zimesalia: {{ product.quantity }} {{ product.unit }}</p>
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100 border-0 bg-primary-card shadow-sm transition">
+            <a href="{{ url_for('buyer.product_detail', id=product.id) }}" class="text-decoration-none">
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="height: 180px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top d-flex align-items-center justify-content-center bg-secondary" style="height: 180px;">
+                        <i class="fas fa-image fa-3x text-muted"></i>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title text-light">{{ product.name }}</h5>
+                    <p class="text-muted small">{{ product.shop.name }}</p>
+                    <p class="fw-bold text-accent">TZS {{ "{:,.0f}".format(product.price) }}/{{ product.unit }}</p>
+                    {% if product.description %}
+                        <p class="text-muted small">{{ product.description|truncate(60) }}</p>
+                    {% endif %}
+                </div>
+            </a>
+            <div class="card-footer bg-transparent border-0">
                 <form method="POST" action="{{ url_for('buyer.add_to_cart') }}">
                     <input type="hidden" name="product_id" value="{{ product.id }}">
-                    <div class="input-group input-group-sm mb-2">
-                        <input type="number" name="quantity" value="1" min="1" max="{{ product.quantity }}" class="form-control" step="0.01">
-                        <button type="submit" class="btn btn-success" title="Weka kwenye rukwama"><i class="fas fa-cart-plus"></i></button>
+                    <div class="input-group input-group-sm">
+                        <input type="number" name="quantity" value="1" min="1" max="{{ product.quantity }}" class="form-control">
+                        <button type="submit" class="btn btn-success"><i class="fas fa-cart-plus"></i></button>
                     </div>
                 </form>
             </div>
@@ -25,7 +43,7 @@
     <div class="col-12 text-center py-5">
         <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
         <h4>Hakuna bidhaa kwa sasa</h4>
-        <p class="text-muted">Wauzaji hawajaweka bidhaa bado. Jaribu tena baadaye.</p>
+        <p class="text-muted">Jisajili kama muuzaji ili kuongeza bidhaa.</p>
     </div>
     {% endfor %}
 </div>

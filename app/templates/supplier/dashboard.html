@@ -1,75 +1,138 @@
 {% extends "base.html" %}
 {% block title %}Dashibodi ya Msambazaji{% endblock %}
+
 {% block content %}
 <div class="row">
-    <div class="col-md-3">
-        <div class="card border-0 bg-primary-card shadow-sm">
-            <div class="card-body text-center">
-                <i class="fas fa-building fa-3x text-accent mb-3"></i>
-                <h5>{{ supplier.business_name }}</h5>
-                <p class="text-muted">{{ supplier.location or 'Hakuna eneo' }}</p>
-                {% if not supplier.verified %}
-                <span class="badge bg-warning">Haijathibitishwa</span>
-                {% endif %}
+    <div class="col-lg-3 mb-4">
+        <div class="card border-0 bg-primary-card shadow-sm sticky-top" style="top: 80px;">
+            <div class="card-body p-0">
+                {% include 'supplier/_sidebar.html' %}
             </div>
         </div>
     </div>
-    <div class="col-md-9">
-        <div class="row g-4">
-            <div class="col-md-4">
+    <div class="col-lg-9">
+        <!-- Welcome Card -->
+       <h4><span class="welcome-text">Karibu, {{ supplier.business_name }}</span></h4>
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
                 <div class="card border-0 bg-primary-card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="text-muted">Maagizo Yanayosubiri</h6>
-                        <h3>{{ pending_orders }}</h3>
+                    <div class="card-body text-center">
+                        <h6 class="text-muted">Yanayosubiri</h6>
+                        <h3 class="fw-bold text-warning">{{ pending_orders }}</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card border-0 bg-primary-card shadow-sm">
-                    <div class="card-body">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted">Yaliyokubaliwa</h6>
+                        <h3 class="fw-bold text-info">{{ accepted_orders }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 bg-primary-card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted">Yaliyotimizwa</h6>
+                        <h3 class="fw-bold text-success">{{ fulfilled_orders }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 bg-primary-card shadow-sm">
+                    <div class="card-body text-center">
                         <h6 class="text-muted">Jumla ya Maagizo</h6>
-                        <h3>{{ total_orders }}</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card border-0 bg-primary-card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="text-muted">Bidhaa Zangu</h6>
-                        <h3>{{ total_products }}</h3>
+                        <h3 class="fw-bold">{{ total_orders }}</h3>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Two‑column layout -->
+        <div class="row g-4">
+            <!-- Recent Orders -->
+            <div class="col-md-7">
+                <div class="card border-0 bg-primary-card shadow-sm">
+                    <div class="card-header bg-transparent border-0 pt-3">
+                        <h5 class="welcome-text"><i class="fas fa-history text-accent me-2"></i>Maagizo ya Hivi Karibuni</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_orders %}
+                            <div class="list-group list-group-flush bg-transparent">
+                                {% for order in recent_orders %}
+                                <div class="list-group-item bg-transparent">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ order.product_name }}</strong><br>
+                                            <small class="text-muted">{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                                        </div>
+                                        <div>
+                                            <span class="badge bg-{% if order.status == 'accepted' %}success{% elif order.status == 'rejected' %}danger{% elif order.status == 'fulfilled' %}info{% else %}warning{% endif %}">
+                                                {{ order.status }}
+                                            </span>
+                                            <span class="ms-2">{{ order.quantity }} {{ order.unit }}</span>
+                                            <a href="{{ url_for('supplier.orders') }}" class="btn btn-sm btn-outline-success ms-2">Angalia</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Hakuna maagizo bado.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Products -->
+            <div class="col-md-5">
+                <div class="card border-0 bg-primary-card shadow-sm">
+                    <div class="card-header bg-transparent border-0 pt-3">
+                        <h5 class="welcome-text"><i class="fas fa-star text-accent me-2"></i>Bidhaa Zinazohitajika Sana</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if top_products %}
+                            <ul class="list-group list-group-flush bg-transparent">
+                                {% for p in top_products %}
+                                <li class="list-group-item bg-transparent d-flex justify-content-between">
+                                    <span>{{ p.product_name }}</span>
+                                    <span class="fw-bold">{{ p.total_qty }} {{ p.unit or 'pcs' }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted">Hakuna data bado.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
         <div class="card border-0 bg-primary-card shadow-sm mt-4">
             <div class="card-header bg-transparent border-0 pt-3">
-                <h5 class="fw-semibold"><i class="fas fa-truck text-accent me-2"></i>Maagizo ya Hivi Karibuni</h5>
+                <h5 class="welcome-text"><i class="fas fa-stream text-accent me-2"></i>Shughuli za Karibuni</h5>
             </div>
             <div class="card-body">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Muuzaji</th>
-                            <th>Bidhaa</th>
-                            <th>Idadi</th>
-                            <th>Hali</th>
-                            <th>Tarehe</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for order in recent_orders %}
-                        <tr>
-                            <td>{{ order.vendor.full_name }}</td>
-                            <td>{{ order.product_name }}</td>
-                            <td>{{ order.quantity }} {{ order.unit }}</td>
-                            <td><span class="badge bg-{% if order.status == 'pending' %}warning{% elif order.status == 'accepted' %}success{% elif order.status == 'rejected' %}danger{% else %}info{% endif %}">{{ order.status }}</span></td>
-                            <td>{{ order.created_at.strftime('%d/%m') }}</td>
-                        </tr>
+                {% if recent_activities %}
+                    <div class="list-group list-group-flush bg-transparent">
+                        {% for act in recent_activities %}
+                        <div class="list-group-item bg-transparent">
+                            <div class="d-flex">
+                                <i class="fas fa-truck text-accent me-3 mt-1"></i>
+                                <div>
+                                    <p class="mb-0">
+                                        Ombi la {{ act.product_name }} ({{ act.quantity }} {{ act.unit }}) limekuwa <strong>{{ act.status }}</strong>
+                                    </p>
+                                    <small class="text-muted">{{ act.updated_at.strftime('%d/%m/%Y %H:%M') if act.updated_at else act.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                                </div>
+                            </div>
+                        </div>
                         {% endfor %}
-                    </tbody>
-                </table>
-                <a href="{{ url_for('supplier.orders') }}" class="btn btn-sm btn-outline-success">Angalia zote</a>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Hakuna shughuli za hivi karibuni.</p>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -1,46 +1,61 @@
 {% extends "base.html" %}
 {% block title %}Maagizo{% endblock %}
+
 {% block content %}
-<h2>Maagizo Yote</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Muuzaji</th>
-            <th>Bidhaa</th>
-            <th>Idadi</th>
-            <th>Hali</th>
-            <th>Tarehe</th>
-            <th>Hatua</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for order in orders %}
-        <tr>
-            <td>{{ order.vendor.full_name }}</td>
-            <td>{{ order.product_name }}</td>
-            <td>{{ order.quantity }} {{ order.unit }}</td>
-            <td>
-                {% if order.status == 'pending' %}
-                    <span class="badge bg-warning">Inasubiri</span>
-                {% elif order.status == 'accepted' %}
-                    <span class="badge bg-success">Imekubaliwa</span>
-                {% elif order.status == 'rejected' %}
-                    <span class="badge bg-danger">Imekataliwa</span>
-                {% elif order.status == 'fulfilled' %}
-                    <span class="badge bg-info">Imetimizwa</span>
-                {% endif %}
-            </td>
-            <td>{{ order.created_at.strftime('%d/%m/%Y') }}</td>
-            <td>
-                {% if order.status == 'pending' %}
-                    <a href="{{ url_for('supplier.accept_order', id=order.id) }}" class="btn btn-sm btn-success">Kubali</a>
-                    <a href="{{ url_for('supplier.reject_order', id=order.id) }}" class="btn btn-sm btn-danger">Kataa</a>
-                {% elif order.status == 'accepted' %}
-                    <a href="{{ url_for('supplier.fulfill_order', id=order.id) }}" class="btn btn-sm btn-info">Timiza</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-lg-3 mb-4">
+        <div class="card border-0 bg-primary-card shadow-sm sticky-top" style="top: 80px;">
+            <div class="card-body p-0">
+                {% include 'supplier/_sidebar.html' %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <h2 class="mb-4"><i class="fas fa-truck text-accent me-2"></i>Maagizo Yote</h2>
+
+        <div class="card border-0 bg-primary-card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr class="border-bottom border-secondary">
+                                <th>Muuzaji</th>
+                                <th>Bidhaa</th>
+                                <th>Idadi</th>
+                                <th>Tarehe</th>
+                                <th>Hali</th>
+                                <th>Hatua</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{ order.vendor.full_name or order.vendor.phone }}</td>
+                                <td>{{ order.product_name }}</td>
+                                <td>{{ order.quantity }} {{ order.unit }}</td>
+                                <td>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td>
+                                    <span class="badge bg-{% if order.status == 'accepted' %}success{% elif order.status == 'rejected' %}danger{% elif order.status == 'fulfilled' %}info{% else %}warning{% endif %}">
+                                        {{ order.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if order.status == 'pending' %}
+                                        <a href="{{ url_for('supplier.accept_order', id=order.id) }}" class="btn btn-sm btn-success">Kubali</a>
+                                        <a href="{{ url_for('supplier.reject_order', id=order.id) }}" class="btn btn-sm btn-danger">Kataa</a>
+                                    {% elif order.status == 'accepted' %}
+                                        <a href="{{ url_for('supplier.fulfill_order', id=order.id) }}" class="btn btn-sm btn-info">Timiza</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="6" class="text-center text-muted">Hakuna maagizo kwa sasa.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

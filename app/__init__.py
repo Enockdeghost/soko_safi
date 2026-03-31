@@ -1,15 +1,9 @@
-from flask import Flask, render_template, request, g
-from app.extensions import db, migrate, login, babel, talisman, limiter, scheduler, mail
+from flask import Flask, render_template
+from app.extensions import db, migrate, login, limiter, scheduler, mail
 from config import Config
 import logging
 from logging.handlers import RotatingFileHandler
 import os
-
-def get_locale():
-    if not g.get('lang_code', None):
-        languages = ['sw', 'en']
-        g.lang_code = request.accept_languages.best_match(languages) or 'sw'
-    return g.lang_code
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -21,16 +15,6 @@ def create_app(config_class=Config):
     login.login_view = 'auth.login'
     login.login_message = 'Tafadhali ingia ili kuendelea.'
     login.login_message_category = 'info'
-    babel.init_app(app, locale_selector=get_locale)
-
-    csp = {
-        'default-src': '\'self\'',
-        'script-src': ['\'self\'', 'https://cdn.jsdelivr.net', 'https://code.jquery.com'],
-        'style-src': ['\'self\'', 'https://cdn.jsdelivr.net'],
-        'img-src': ['\'self\'', 'data:'],
-        'font-src': ['\'self\'', 'https://cdn.jsdelivr.net']
-    }
-    talisman.init_app(app, content_security_policy=csp, force_https=False)
 
     limiter.init_app(app)
     mail.init_app(app)

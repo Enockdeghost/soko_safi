@@ -29,9 +29,8 @@ def get_shop_or_abort():
         return redirect(url_for('auth.setup_wizard'))
     return shop
 
-# ----------------------------------------------------------------------
+
 # DASHBOARD (with all advanced metrics)
-# ----------------------------------------------------------------------
 @bp.route('/dashboard')
 @login_required
 @vendor_required
@@ -257,9 +256,8 @@ def dashboard():
         sales_data=sales_data
     )
 
-# ----------------------------------------------------------------------
+
 # QUICK ACTIONS
-# ----------------------------------------------------------------------
 @bp.route('/quick-sale', methods=['POST'])
 @login_required
 @vendor_required
@@ -310,9 +308,8 @@ def quick_expense():
     flash('Gharama imeongezwa!', 'success')
     return redirect(url_for('vendor.dashboard'))
 
-# ----------------------------------------------------------------------
+
 # INVENTORY MANAGEMENT
-# ----------------------------------------------------------------------
 @bp.route('/inventory')
 @login_required
 @vendor_required
@@ -444,9 +441,8 @@ def delete_product(id):
     flash('Bidhaa imefutwa.', 'success')
     return redirect(url_for('vendor.inventory'))
 
-# ----------------------------------------------------------------------
+
 # SALES
-# ----------------------------------------------------------------------
 @bp.route('/sales', methods=['GET', 'POST'])
 @login_required
 @vendor_required
@@ -506,9 +502,8 @@ def delete_sale(id):
     flash('Rekodi ya mauzo imefutwa.', 'success')
     return redirect(url_for('vendor.sales'))
 
-# ----------------------------------------------------------------------
+
 # EXPENSES
-# ----------------------------------------------------------------------
 @bp.route('/expenses', methods=['GET', 'POST'])
 @login_required
 @vendor_required
@@ -550,9 +545,8 @@ def delete_expense(id):
     flash('Gharama imefutwa.', 'success')
     return redirect(url_for('vendor.expenses'))
 
-# ----------------------------------------------------------------------
+
 # EXPENSE CATEGORIES
-# ----------------------------------------------------------------------
 @bp.route('/expense-categories', methods=['GET', 'POST'])
 @login_required
 @vendor_required
@@ -586,9 +580,8 @@ def delete_expense_category(id):
     flash('Aina ya gharama imefutwa.', 'success')
     return redirect(url_for('vendor.expense_categories'))
 
-# ----------------------------------------------------------------------
+
 # SUPPLIER ORDERS
-# ----------------------------------------------------------------------
 @bp.route('/supplier-orders', methods=['GET', 'POST'])
 @login_required
 @vendor_required
@@ -639,9 +632,8 @@ def cancel_supplier_order(id):
         flash('Ombi limeghairiwa.', 'success')
     return redirect(url_for('vendor.supplier_orders'))
 
-# ----------------------------------------------------------------------
+
 # REPORTS
-# ----------------------------------------------------------------------
 @bp.route('/reports', methods=['GET', 'POST'])
 @login_required
 @vendor_required
@@ -779,9 +771,8 @@ def export_csv():
         mimetype='text/csv'
     )
 
-# ----------------------------------------------------------------------
+
 # VOUCHER REDEMPTION
-# ----------------------------------------------------------------------
 @bp.route('/redeem-voucher', methods=['POST'])
 @login_required
 @vendor_required
@@ -814,9 +805,8 @@ def redeem_voucher():
     flash(f'Vocha imetumika. Thamani: TZS {voucher.amount}', 'success')
     return redirect(url_for('vendor.sales'))
 
-# ----------------------------------------------------------------------
+
 # TRAININGS & GRANTS
-# ----------------------------------------------------------------------
 @bp.route('/trainings')
 @login_required
 @vendor_required
@@ -871,9 +861,8 @@ def grants():
     my_grants = GrantApplication.query.filter_by(vendor_id=current_user.id).order_by(GrantApplication.applied_at.desc()).all()
     return render_template('vendor/grants.html', form=form, grants=my_grants)
 
-# ----------------------------------------------------------------------
+
 # NOTIFICATIONS
-# ----------------------------------------------------------------------
 @bp.route('/notifications')
 @login_required
 @vendor_required
@@ -885,9 +874,8 @@ def notifications():
     db.session.commit()
     return render_template('vendor/notifications.html', notifications=notifs)
 
-# ----------------------------------------------------------------------
+
 # SHOP EDIT
-# ----------------------------------------------------------------------
 @bp.route('/shop/edit', methods=['GET', 'POST'])
 @login_required
 @vendor_required
@@ -905,9 +893,8 @@ def edit_shop():
         return redirect(url_for('vendor.dashboard'))
     return render_template('vendor/edit_shop.html', shop=shop)
 
-# ----------------------------------------------------------------------
+
 # PRINT RECEIPT
-# ----------------------------------------------------------------------
 @bp.route('/print-receipt/<int:sale_id>')
 @login_required
 @vendor_required
@@ -918,9 +905,8 @@ def print_receipt(sale_id):
     shop = current_user.shop
     return render_template('vendor/receipt.html', sale=sale, shop=shop, datetime=datetime)
 
-# ----------------------------------------------------------------------
+
 # SET DAILY TARGET
-# ----------------------------------------------------------------------
 @bp.route('/set-target', methods=['POST'])
 @login_required
 @vendor_required

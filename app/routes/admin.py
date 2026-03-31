@@ -80,9 +80,7 @@ def toggle_vendor_active(id):
     flash(f'Mfanyabiashara {vendor.full_name} ame{"washwa" if vendor.is_active else "zimwa"}.', 'success')
     return redirect(url_for('admin.vendors'))
 
-# ----------------------------------------------------------------------
-# SHOP VERIFICATION
-# ----------------------------------------------------------------------
+
 @bp.route('/shops')
 @login_required
 @admin_required
@@ -202,9 +200,7 @@ def revoke_voucher(id):
         flash('Vocha imebatilishwa.', 'success')
     return redirect(url_for('admin.vouchers'))
 
-# ----------------------------------------------------------------------
-# TRAINING PROGRAMS
-# ----------------------------------------------------------------------
+
 @bp.route('/trainings', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -259,9 +255,7 @@ def handle_training_application(id, action):
     flash(f'Ombi lime{msg}.', 'success')
     return redirect(url_for('admin.training_applicants', id=app.program_id))
 
-# ----------------------------------------------------------------------
-# GRANT APPLICATIONS
-# ----------------------------------------------------------------------
+
 @bp.route('/grants')
 @login_required
 @admin_required
@@ -295,9 +289,7 @@ def handle_grant(id, action):
     flash(f'Ruzuku ime{msg}.', 'success')
     return redirect(url_for('admin.grants'))
 
-# ----------------------------------------------------------------------
-# USER MANAGEMENT
-# ----------------------------------------------------------------------
+
 @bp.route('/users')
 @login_required
 @admin_required
@@ -385,9 +377,7 @@ def order_detail(id):
     order = Order.query.get_or_404(id)
     return render_template('admin/order_detail.html', order=order)
 
-# ----------------------------------------------------------------------
-# SYSTEM LOGS
-# ----------------------------------------------------------------------
+
 @bp.route('/logs')
 @login_required
 @admin_required
@@ -396,9 +386,7 @@ def logs():
     logs = TransactionLog.query.order_by(TransactionLog.timestamp.desc()).paginate(page=page, per_page=50, error_out=False)
     return render_template('admin/logs.html', logs=logs)
 
-# ----------------------------------------------------------------------
-# REPORTS (admin-level summary)
-# ----------------------------------------------------------------------
+
 @bp.route('/reports', methods=['GET', 'POST'])
 @login_required
 @admin_required
